@@ -1,5 +1,5 @@
 /*=============== GOOGLE FONTS ===============*/
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
 
 /*=============== BASE ===============*/
 * {
@@ -37,6 +37,67 @@ img {
   height: auto;
 }
 
+/*=============== ANIMATIONS ===============*/
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 /*=============== NAVBAR ===============*/
 .navbar {
   background: rgba(252, 252, 252, 0.95);
@@ -49,6 +110,7 @@ img {
   right: 0;
   z-index: 1000;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.8s ease-out;
 }
 
 .navbar-container {
@@ -68,6 +130,7 @@ img {
 
 .navbar-brand:hover {
   color: #d6456a;
+  animation: pulse 0.3s ease-in-out;
 }
 
 .navbar-nav {
@@ -88,6 +151,7 @@ img {
 .navbar-nav a:hover {
   color: #F7567C;
   background: rgba(247, 86, 124, 0.1);
+  transform: translateY(-2px);
 }
 
 .navbar-nav a.active {
@@ -96,7 +160,6 @@ img {
 }
 
 /*=============== LOGIN ===============*/
-
 .login {
   position: relative;
   min-height: 100vh;
@@ -104,11 +167,21 @@ img {
   align-items: center;
   justify-content: center;
   background: none;
-  padding-top: 80px; /* Account for fixed navbar */
+  padding-top: 80px;
+  animation: fadeIn 1s ease-out;
 }
 
 .register-bg {
   background: none;
+}
+
+.login__img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.1;
 }
 
 .container {
@@ -122,6 +195,7 @@ img {
   box-shadow: 0 8px 32px 0 rgba(247, 86, 124, 0.2);
   max-width: 600px;
   width: 100%;
+  animation: fadeInUp 0.8s ease-out;
 }
 
 .register-container {
@@ -279,37 +353,140 @@ img {
   color: #F7567C;
 }
 
-/*=============== DASHBOARD ===============*/
-.dashboard {
+/* Remove browser autofill background for inputs */
+.login__input,
+.login__input:-webkit-autofill,
+.login__input:-webkit-autofill:focus,
+.login__input:-webkit-autofill:hover,
+.login__input:-webkit-autofill:active {
+  background: none !important;
+  -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+  -webkit-text-fill-color: #333 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/*=============== WELCOME PAGE ===============*/
+.welcome {
   padding-top: 100px;
   min-height: 100vh;
   background: linear-gradient(135deg, #FCFCFC 0%, #FFFAE3 100%);
+  animation: fadeIn 1s ease-out;
 }
 
-.dashboard-container {
+.welcome-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
 }
 
-.dashboard-title {
+.welcome-title {
   color: #F7567C;
-  font-size: 2.5rem;
-  font-weight: 600;
+  font-size: 3rem;
+  font-weight: 700;
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+  animation: fadeInUp 1s ease-out;
 }
 
-.dashboard-content {
+.welcome-subtitle {
+  color: #666;
+  font-size: 1.2rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+.welcome-content {
   background: rgba(252, 252, 252, 0.95);
   border-radius: 1.5rem;
-  padding: 2rem;
+  padding: 3rem;
   box-shadow: 0 8px 32px 0 rgba(247, 86, 124, 0.1);
   border: 1px solid rgba(247, 86, 124, 0.2);
+  animation: fadeInUp 1s ease-out 0.4s both;
+}
+
+.welcome-description {
+  color: #666;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.welcome-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.welcome-feature {
+  background: rgba(255, 250, 227, 0.6);
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(247, 86, 124, 0.2);
+  transition: all 0.3s ease;
+  animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+.welcome-feature:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(247, 86, 124, 0.15);
+  background: rgba(255, 250, 227, 0.8);
+}
+
+.welcome-feature:nth-child(2) {
+  animation-delay: 0.8s;
+}
+
+.welcome-feature:nth-child(3) {
+  animation-delay: 1s;
+}
+
+.welcome-feature-title {
+  color: #F7567C;
+  margin-bottom: 0.8rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.welcome-feature-description {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.welcome-cta {
+  text-align: center;
+  margin-top: 3rem;
+  animation: fadeInUp 1s ease-out 1.2s both;
+}
+
+.welcome-cta-button {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #F7567C 0%, #d6456a 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(247, 86, 124, 0.3);
+}
+
+.welcome-cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(247, 86, 124, 0.4);
+  animation: pulse 0.3s ease-in-out;
+}
+
+/* Floating animation for decorative elements */
+.welcome-floating {
+  animation: float 6s ease-in-out infinite;
 }
 
 /*=============== BREAKPOINTS ===============*/
-/* For medium devices */
 @media screen and (min-width: 576px) {
   .container {
     max-width: 400px;
@@ -339,7 +516,6 @@ select.login__input option {
   background: #fff;
 }
 
-/* One-line for educational qualification */
 #reg-qualification {
   white-space: nowrap;
   overflow: hidden;
@@ -359,5 +535,14 @@ select.login__input option {
   }
   .navbar-nav {
     gap: 1rem;
+  }
+  .welcome-title {
+    font-size: 2rem;
+  }
+  .welcome-content {
+    padding: 2rem 1rem;
+  }
+  .welcome-features {
+    grid-template-columns: 1fr;
   }
 }

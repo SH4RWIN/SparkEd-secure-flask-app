@@ -11,6 +11,8 @@ def dashboard():
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == "POST":
+        data = request.get_json()
+        return f"<h1>{data}</h1>"
         pass    # add the registration handling logic
     else:
         return render_template('register.html')

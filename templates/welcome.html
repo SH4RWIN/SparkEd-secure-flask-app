@@ -1,36 +1,55 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<title>SparkEd - Dashboard</title>
+<title>SparkEd - Welcome</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 {% endblock %}
 
 {% block body %}
-<div class="dashboard">
-    <div class="dashboard-container">
-        <h1 class="dashboard-title">Welcome to SparkEd</h1>
-        <div class="dashboard-content">
-            <h2 style="color: #F7567C; margin-bottom: 1rem;">Your Learning Dashboard</h2>
-            <p style="color: #666; line-height: 1.6; margin-bottom: 1.5rem;">
+<div class="welcome">
+    <div class="welcome-container">
+        <h1 class="welcome-title">Welcome to SparkEd</h1>
+        <p class="welcome-subtitle">Igniting Knowledge, Empowering Minds</p>
+        
+        <div class="welcome-content">
+            <p class="welcome-description">
                 Welcome to SparkEd - where knowledge ignites and learning comes alive. 
-                Explore our interactive courses, track your progress, and discover new opportunities to grow.
+                We believe that education should be accessible, engaging, and transformative. 
+                Join thousands of learners who are already discovering new possibilities and 
+                unlocking their potential through our innovative learning platform.
             </p>
             
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
-                <div style="background: rgba(255, 250, 227, 0.5); padding: 1.5rem; border-radius: 1rem; border: 1px solid rgba(247, 86, 124, 0.2);">
-                    <h3 style="color: #F7567C; margin-bottom: 0.5rem;">My Courses</h3>
-                    <p style="color: #666; font-size: 0.9rem;">Track your enrolled courses and progress</p>
+            <div class="welcome-features">
+                <div class="welcome-feature">
+                    <h3 class="welcome-feature-title">Interactive Learning</h3>
+                    <p class="welcome-feature-description">
+                        Experience learning like never before with our interactive courses, 
+                        real-time feedback, and engaging multimedia content that makes 
+                        education both fun and effective.
+                    </p>
                 </div>
                 
-                <div style="background: rgba(255, 250, 227, 0.5); padding: 1.5rem; border-radius: 1rem; border: 1px solid rgba(247, 86, 124, 0.2);">
-                    <h3 style="color: #F7567C; margin-bottom: 0.5rem;">Achievements</h3>
-                    <p style="color: #666; font-size: 0.9rem;">View your earned badges and certificates</p>
+                <div class="welcome-feature">
+                    <h3 class="welcome-feature-title">Personalized Path</h3>
+                    <p class="welcome-feature-description">
+                        Your learning journey is unique. Our AI-powered system adapts to 
+                        your pace and style, creating a personalized learning path that 
+                        grows with you.
+                    </p>
                 </div>
                 
-                <div style="background: rgba(255, 250, 227, 0.5); padding: 1.5rem; border-radius: 1rem; border: 1px solid rgba(247, 86, 124, 0.2);">
-                    <h3 style="color: #F7567C; margin-bottom: 0.5rem;">Learning Path</h3>
-                    <p style="color: #666; font-size: 0.9rem;">Discover personalized learning recommendations</p>
+                <div class="welcome-feature">
+                    <h3 class="welcome-feature-title">Track Progress</h3>
+                    <p class="welcome-feature-description">
+                        Monitor your achievements, earn badges, and celebrate milestones 
+                        as you progress through your educational journey with detailed 
+                        analytics and insights.
+                    </p>
                 </div>
+            </div>
+            
+            <div class="welcome-cta">
+                <a href="/register" class="welcome-cta-button">Start Your Journey</a>
             </div>
         </div>
     </div>
