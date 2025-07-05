@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>SparkEd - Dashboard</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="dashboard">
+    <div class="dashboard-container">
+        <h1 class="dashboard-title">Welcome to SparkEd</h1>
+        <div class="dashboard-content">
+            <h2 style="color: #F7567C; margin-bottom: 1rem;">Your Learning Dashboard</h2>
+            <p style="color: #666; line-height: 1.6; margin-bottom: 1.5rem;">
+                Welcome to SparkEd - where knowledge ignites and learning comes alive. 
+                Explore our interactive courses, track your progress, and discover new opportunities to grow.
+            </p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                <div style="background: rgba(255, 250, 227, 0.5); padding: 1.5rem; border-radius: 1rem; border: 1px solid rgba(247, 86, 124, 0.2);">
+                    <h3 style="color: #F7567C; margin-bottom: 0.5rem;">My Courses</h3>
+                    <p style="color: #666; font-size: 0.9rem;">Track your enrolled courses and progress</p>
+                </div>
+                
+                <div style="background: rgba(255, 250, 227, 0.5); padding: 1.5rem; border-radius: 1rem; border: 1px solid rgba(247, 86, 124, 0.2);">
+                    <h3 style="color: #F7567C; margin-bottom: 0.5rem;">Achievements</h3>
+                    <p style="color: #666; font-size: 0.9rem;">View your earned badges and certificates</p>
+                </div>
+                
+                <div style="background: rgba(255, 250, 227, 0.5); padding: 1.5rem; border-radius: 1rem; border: 1px solid rgba(247, 86, 124, 0.2);">
+                    <h3 style="color: #F7567C; margin-bottom: 0.5rem;">Learning Path</h3>
+                    <p style="color: #666; font-size: 0.9rem;">Discover personalized learning recommendations</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
