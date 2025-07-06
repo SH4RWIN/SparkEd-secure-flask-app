@@ -247,6 +247,7 @@ img {
 
 .login__box-input {
   position: relative;
+  width: 150%;
 }
 
 .login__label {
@@ -280,6 +281,7 @@ img {
 .login__check {
   margin-bottom: 1.5rem;
 }
+
 
 .login__check-label,
 .login__forgot,
@@ -545,4 +547,22 @@ select.login__input option {
   .welcome-features {
     grid-template-columns: 1fr;
   }
+}
+
+.pw-valid { color: #28a745 !important; }
+.pw-invalid { color: #F7567C !important; }
+
+.show-password-toggle {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+  font-size: 1em;
+  color: #F7567C;
+  user-select: none;
+  z-index: 2;
 }

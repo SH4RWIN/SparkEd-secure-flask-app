@@ -29,12 +29,15 @@
             </div>
          </div>
          <div class="login__box">
-            <div class="login__box-input">
+            <div class="login__box-input" style="position: relative;">
                <input type="password" required class="login__input" id="reg-password" name="password" placeholder=" ">
                <label for="reg-password" class="login__label">Password</label>
+               <!-- Show password toggle -->
+               <label class="show-password-toggle">
+                 <input type="checkbox" id="show-password" style="accent-color: #F7567C; margin-right: 2px;"> Show
+               </label>
             </div>
          </div>
-
 
          <!-- Password Strength Meter and Checklist -->
          <div id="password-strength-section" style="margin-bottom: 1rem;">
