@@ -1,91 +1,64 @@
-// registration.js - Frontend validation and secure form submission
 
-function escapeHTML(str) {
-    return str.replace(/[&<>'"`=\/]/g, function (s) {
-        return ({
-            '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',
-            '`': '&#96;', '=': '&#61;', '/': '&#47;'
-        })[s];
-    });
-}
+// Password strength and confirmation logic for registration form
+document.addEventListener('DOMContentLoaded', function() {
+  const passwordInput = document.getElementById('reg-password');
+  const confirmInput = document.getElementById('reg-confirm');
+  const registerBtn = document.querySelector('.login__button');
+  const strengthText = document.getElementById('password-strength-text');
+  const strengthBar = document.getElementById('password-strength-bar');
+  const reqLowerUpper = document.getElementById('pw-lower-upper');
+  const reqNumber = document.getElementById('pw-number');
+  const reqSpecial = document.getElementById('pw-special');
+  const reqLength = document.getElementById('pw-length');
 
-function validateEmail(email) {
-    return /^[\w-.]+@[\w-]+\.[a-zA-Z]{2,}$/.test(email);
-}
+  function checkStrength(val) {
+    let strength = 0;
+    const hasLower = /[a-z]/.test(val);
+    const hasUpper = /[A-Z]/.test(val);
+    const hasNumber = /\d/.test(val);
+    const hasSpecial = /[!@#$%^&*]/.test(val);
+    const hasLength = val.length >= 8;
 
-function validatePhone(phone) {
-    return /^\+?\d{10,15}$/.test(phone);
-}
+    reqLowerUpper.style.color = (hasLower && hasUpper) ? '#28a745' : '#F7567C';
+    reqNumber.style.color = hasNumber ? '#28a745' : '#F7567C';
+    reqSpecial.style.color = hasSpecial ? '#28a745' : '#F7567C';
+    reqLength.style.color = hasLength ? '#28a745' : '#F7567C';
 
-function validatePassword(pw) {
-    // At least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
-    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(pw);
-}
+    if (hasLower && hasUpper) strength++;
+    if (hasNumber) strength++;
+    if (hasSpecial) strength++;
+    if (hasLength) strength++;
 
-document.getElementById('registerForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const errorDiv = document.getElementById('reg-error');
-    errorDiv.textContent = '';
+    const barWidth = ['10%', '40%', '70%', '100%'][strength];
+    const barColor = ['#F7567C', '#FFA500', '#FFD700', '#28a745'][strength];
+    const text = ['Very Weak', 'Weak', 'Medium', 'Strong'][strength];
 
-    const name = escapeHTML(document.getElementById('reg-name').value.trim());
-    const email = escapeHTML(document.getElementById('reg-email').value.trim());
-    const phone = escapeHTML(document.getElementById('reg-phone').value.trim());
-    const age = escapeHTML(document.getElementById('reg-age').value.trim());
-    const gender = escapeHTML(document.getElementById('reg-gender').value);
-    const address = escapeHTML(document.getElementById('reg-address').value.trim());
-    const qualification = escapeHTML(document.getElementById('reg-qualification').value.trim());
-    const password = document.getElementById('reg-password').value;
-    const confirm = document.getElementById('reg-confirm').value;
+    strengthBar.style.width = barWidth;
+    strengthBar.style.background = barColor;
+    strengthText.textContent = text;
+    strengthText.style.color = barColor;
 
-    if (!name || !email || !phone || !age || !gender || !address || !qualification || !password || !confirm) {
-        errorDiv.textContent = 'All fields are required.';
-        return;
+    return strength === 4;
+  }
+
+  function updateRegisterButton() {
+    const pwVal = passwordInput.value;
+    const confirmVal = confirmInput.value;
+    const strong = checkStrength(pwVal);
+    const match = pwVal && confirmVal && pwVal === confirmVal;
+    registerBtn.disabled = !(strong && match);
+
+    // Show/hide password match error
+    const matchError = document.getElementById('pw-match-error');
+    if (confirmVal && !match) {
+      matchError.textContent = '⚠️';
+    } else {
+      matchError.textContent = '';
     }
-    if (!validateEmail(email)) {
-        errorDiv.textContent = 'Invalid email format.';
-        return;
-    }
-    if (!validatePhone(phone)) {
-        errorDiv.textContent = 'Invalid phone number.';
-        return;
-    }
-    if (parseInt(age) < 10 || parseInt(age) > 120) {
-        errorDiv.textContent = 'Age must be between 10 and 120.';
-        return;
-    }
-    if (!validatePassword(password)) {
-        errorDiv.textContent = 'Password must be at least 8 characters, include uppercase, lowercase, number, and special character.';
-        return;
-    }
-    if (password !== confirm) {
-        errorDiv.textContent = 'Passwords do not match.';
-        return;
-    }
+  }
 
-    // Prepare data
-    const data = {
-        name, email, phone, age, gender, address, qualification,
-        password: escapeHTML(password) // escape for extra safety
-    };
-
-    // Send data securely via fetch
-    fetch('/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(resp => {
-        if (resp.success) {
-            window.location.href = '/login';
-        } else {
-            errorDiv.textContent = resp.error || 'Registration failed.';
-        }
-    })
-    .catch(() => {
-        errorDiv.textContent = 'Network error.';
-    });
+  passwordInput.addEventListener('input', updateRegisterButton);
+  confirmInput.addEventListener('input', updateRegisterButton);
+  updateRegisterButton();
 });
+

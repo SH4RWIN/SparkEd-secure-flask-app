@@ -34,11 +34,32 @@
                <label for="reg-password" class="login__label">Password</label>
             </div>
          </div>
+
+
+         <!-- Password Strength Meter and Checklist -->
+         <div id="password-strength-section" style="margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span>Password Strength:</span>
+              <span id="password-strength-text" style="font-weight: 600; color: #F7567C;">Very Weak</span>
+            </div>
+            <div style="height: 6px; background: #eee; border-radius: 3px; margin: 0.5rem 0;">
+              <div id="password-strength-bar" style="height: 100%; width: 10%; background: #F7567C; border-radius: 3px; transition: width 0.3s, background 0.3s;"></div>
+            </div>
+            <ul id="password-requirements" style="list-style: none; padding-left: 0; margin: 0.5rem 0 0 0;">
+              <li id="pw-lower-upper" style="color: #F7567C;">&#x1F4C4; 1 lowercase & 1 uppercase</li>
+              <li id="pw-number" style="color: #F7567C;">&#x1F4C4; 1 number (0-9)</li>
+              <li id="pw-special" style="color: #F7567C;">&#x1F4C4; 1 special character (!@#$%^&*)</li>
+              <li id="pw-length" style="color: #F7567C;">&#x1F4C4; At least 8 characters</li>
+            </ul>
+         </div>
+
+
          <div class="login__box">
             <div class="login__box-input">
                <input type="password" required class="login__input" id="reg-confirm" name="confirm" placeholder=" ">
                <label for="reg-confirm" class="login__label">Confirm Password</label>
             </div>
+            <div id="pw-match-error" style="color:#F7567C; font-size:0.95em; margin-top:0.25rem;"></div>
          </div>
       </div>
       <button type="submit" class="login__button">Register</button>
@@ -48,5 +69,5 @@
       <div id="reg-error" style="color:red;margin-top:10px;"></div>
    </form>
 </div>
-<!-- <script src="{{ url_for('static', filename='js/registration.js') }}"></script> -->
+<script src="{{ url_for('static', filename='js/registration.js') }}"></script>
 {% endblock %}
