@@ -1,4 +1,3 @@
-
 // ===========Password strength and confirmation logic for registration form===========
 // This script runs after the DOM is fully loaded
 // contains password stregth
@@ -9,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const passwordInput = document.getElementById('reg-password'); // Password input field
   const confirmInput = document.getElementById('reg-confirm');   // Confirm password input field
   const registerBtn = document.querySelector('.login__button');  // Register button
+  // password strength fields
   const strengthText = document.getElementById('password-strength-text'); // Text label for password strength
   const strengthBar = document.getElementById('password-strength-bar');   // Visual bar for password strength
   const reqLowerUpper = document.getElementById('pw-lower-upper'); // Checklist: lower & upper
@@ -56,15 +56,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ===========Function to update the register button and show password match error===========
   function updateRegisterButton() {
-    // Get current values from both password fields
+    // Get current values from all required fields
+    const nameVal = document.getElementById('reg-name').value.trim();
+    const emailVal = document.getElementById('reg-email').value.trim();
+    const phoneVal = document.getElementById('reg-phone').value.trim();
     const pwVal = passwordInput.value;
     const confirmVal = confirmInput.value;
+
     // Check if password is strong
     const strong = checkStrength(pwVal);
-    // Check if both fields are non-empty and match
+    // Check if both password fields are non-empty and match
     const match = pwVal && confirmVal && pwVal === confirmVal;
-    // Enable the register button only if both conditions are true
-    registerBtn.disabled = !(strong && match);
+    // Check if all required fields are filled
+    const allFilled = nameVal && emailVal && phoneVal && pwVal && confirmVal;
+
+    // Enable the register button only if all conditions are true
+    registerBtn.disabled = !(allFilled && strong && match);
 
     // Show/hide password match error message
     const matchError = document.getElementById('pw-match-error');
@@ -80,9 +87,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Listen for input events on both password fields
+
+  // Listen for input events & all required fields for content
   passwordInput.addEventListener('input', updateRegisterButton);
   confirmInput.addEventListener('input', updateRegisterButton);
+  document.getElementById('reg-name').addEventListener('input', updateRegisterButton);
+  document.getElementById('reg-email').addEventListener('input', updateRegisterButton);
+  document.getElementById('reg-phone').addEventListener('input', updateRegisterButton);
+
   // Run once on page load to set initial state
   updateRegisterButton();
 
