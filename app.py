@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, url_for, redirect
 
-
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
@@ -24,7 +23,6 @@ def login():
         pass    # add the login handling logic
     else:
         return render_template('login.html')
-
 
 
 if __name__=="__main__":

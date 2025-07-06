@@ -327,6 +327,11 @@ img {
   box-shadow: 0 8px 25px rgba(247, 86, 124, 0.3);
 }
 
+.login__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .login__register {
   text-align: center;
 }

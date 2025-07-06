@@ -1,6 +1,9 @@
 
-// Password strength and confirmation logic for registration form
+// ===========Password strength and confirmation logic for registration form===========
 // This script runs after the DOM is fully loaded
+// contains password stregth
+// password confirmation
+// password show toggle
 document.addEventListener('DOMContentLoaded', function() {
   // Get references to all relevant DOM elements
   const passwordInput = document.getElementById('reg-password'); // Password input field
@@ -13,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const reqSpecial = document.getElementById('pw-special');         // Checklist: special char
   const reqLength = document.getElementById('pw-length');           // Checklist: length
 
-  // Function to check password strength and update UI
+  // ===========Function to check password strength and update UI===========
   function checkStrength(val) {
     let strength = 0; // Strength score (0-4)
 
@@ -51,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     return strength === 4;
   }
 
-  // Function to update the register button and show password match error
+  // ===========Function to update the register button and show password match error===========
   function updateRegisterButton() {
     // Get current values from both password fields
     const pwVal = passwordInput.value;
@@ -68,6 +71,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (confirmVal && !match) {
       // If user typed something in confirm and it doesn't match, show warning
       matchError.textContent = '⚠️';
+    } else if (confirmVal && match) {
+        // if both paswords matches show ✅
+        matchError.textContent = '✅'
     } else {
       // Otherwise, clear the warning
       matchError.textContent = '';
