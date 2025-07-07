@@ -8,12 +8,14 @@
 {% block body %}
 <div class="login register-bg">
    <form id="registerForm" class="container register-container" autocomplete="off" method="POST">
+      <!-- This form sends the data as a POST request to the server on the same URL. -->
        {{ form.hidden_tag() }}
+      <!-- This hidden tag is used to protect against CSRF attacks. It generates a token that is checked on form submission. -->
       <h1 class="login__title">Register</h1>
       <div class="login__content">
          <div class="login__box">
             <div class="login__box-input">
-               {{ form.username(class="login__input", id="reg-name", placeholder=" ") }}
+               {{ form.full_name(class="login__input", id="reg-name", placeholder=" ") }}
                <label for="reg-name" class="login__label">Full Name</label>
             </div>
          </div>
@@ -31,7 +33,7 @@
          </div>
          <div class="login__box">
             <div class="login__box-input" style="position: relative;">
-               <input type="password" required class="login__input" id="reg-password" name="password" placeholder=" ">
+               {{ form.password(class="login__input", id="reg-password", placeholder=" ") }}
                <label for="reg-password" class="login__label">Password</label>
                <!-- Show password toggle -->
                <label class="show-password-toggle">
@@ -59,7 +61,7 @@
             <br>
          <div class="login__box">
             <div class="login__box-input">
-               <input type="password" required class="login__input" id="reg-confirm" name="confirm" placeholder=" ">
+               {{ form.confirm(class="login__input", id="reg-confirm", placeholder=" ") }}
                <label for="reg-confirm" class="login__label">Confirm Password</label>
             </div>
             <div id="pw-match-error" style="color:#F7567C; font-size:0.95em; margin-top:0.25rem;"></div>

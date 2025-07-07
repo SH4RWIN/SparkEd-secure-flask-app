@@ -1,19 +1,22 @@
-version: '3.8'
+version: '3.8'                # Specifies the version of the Docker Compose file format.
 
-services:
-  db:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydatabase
-    volumes:
-      - db_data:/var/lib/postgresql/data
+services:                     # Defines the services (containers) to run.
+  db:                         # Name of the service (here, a database).
+    image: postgres:latest    # Use the latest official Postgres image from Docker Hub.
+    environment:              # Set environment variables for the container:
+      POSTGRES_USER: user         # - Database username will be 'user'
+      POSTGRES_PASSWORD: password # - Database password will be 'password'
+      POSTGRES_DB: mydatabase     # - Database name will be 'mydatabase'
+    volumes:                  # Mounts a volume for persistent data:
+      - db_data:/var/lib/postgresql/data # Maps the named volume 'db_data' to the Postgres data directory in the container.
+    ports:                   # Maps container ports to host ports:
+      - "5432:5432"           # Exposes Postgres on port 5432 on the host machine.
+volumes:                      # Defines named volumes for persistent storage.
+  db_data:                    # Name of the volume.
+    driver: local             # Use the local driver (default for Docker).
+    driver_opts:              # Options for the local driver:
+      type: none                  # No special type (bind mount).
+      device: ./postgres/data     # Use the local folder './postgres/data' as the volume source.
+      o: bind                    # Bind-mount the folder instead of using Docker-managed storage.
 
-volumes:
-  db_data:
-    driver: local
-    driver_opts:
-      type: none
-      device: ./database/data
-      o: bind
+      
