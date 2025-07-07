@@ -493,6 +493,16 @@ img {
   animation: float 6s ease-in-out infinite;
 }
 
+/*=============== EMAIL VERIFICATION ===============*/
+.verification-bg {
+  background: none;
+}
+
+.verification-bg .container {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
 /*=============== BREAKPOINTS ===============*/
 @media screen and (min-width: 576px) {
   .container {

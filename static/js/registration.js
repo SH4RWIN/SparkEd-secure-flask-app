@@ -40,9 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (hasLength) strength++;
 
     // Arrays for bar width, color, and text based on strength
-    const barWidth = ['10%', '40%', '70%', '100%'][strength];
-    const barColor = ['#F7567C', '#FFA500', '#FFD700', '#28a745'][strength];
-    const text = ['Very Weak', 'Weak', 'Medium', 'Strong'][strength];
+    const barWidth = ['0%', '25%', '50%', '75%', '100%'][strength];
+    const barColor = ['#F7567C', '#FFA500', '#FFD700', '#28a745', '#28a745'][strength];
+    const text = ['Very Weak', 'Weak', 'Medium', 'Strong', 'Very Strong'][strength];
 
     // Update the strength bar and text in the UI
     strengthBar.style.width = barWidth;

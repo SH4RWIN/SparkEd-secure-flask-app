@@ -7,25 +7,24 @@
 
 {% block body %}
 <div class="login register-bg">
-   <form id="registerForm" class="container register-container" autocomplete="off" method="POST">
-       {{ form.hidden_tag() }}
+   <form id="registerForm" class="container register-container" autocomplete="off">
       <h1 class="login__title">Register</h1>
       <div class="login__content">
          <div class="login__box">
             <div class="login__box-input">
-               {{ form.username(class="login__input", id="reg-name", placeholder=" ") }}
+               <input type="text" required class="login__input" id="reg-name" name="name" placeholder=" ">
                <label for="reg-name" class="login__label">Full Name</label>
             </div>
          </div>
          <div class="login__box">
             <div class="login__box-input">
-               {{ form.email(class="login__input", id="reg-email", placeholder=" ") }}
+               <input type="email" required class="login__input" id="reg-email" name="email" placeholder=" ">
                <label for="reg-email" class="login__label">Email</label>
             </div>
          </div>
          <div class="login__box">
             <div class="login__box-input">
-               {{ form.phone(class="login__input", id="reg-phone", placeholder=" ") }}
+               <input type="tel" required class="login__input" id="reg-phone" name="phone" placeholder=" ">
                <label for="reg-phone" class="login__label">Phone</label>
             </div>
          </div>
@@ -56,7 +55,7 @@
               <li id="pw-length" style="color: #F7567C;">&#x1F4C4; At least 8 characters</li>
             </ul>
 
-            <br>
+
          <div class="login__box">
             <div class="login__box-input">
                <input type="password" required class="login__input" id="reg-confirm" name="confirm" placeholder=" ">
