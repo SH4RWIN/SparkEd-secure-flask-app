@@ -32,4 +32,19 @@ def list_all_users():
     finally:
         session.close()
 
+
+# function to drop the entire database
+def drop_database():
+    session = Session()
+    try:
+        # Drop all tables
+        base.metadata.drop_all(engine)
+        print("All tables dropped successfully.")
+    except Exception as e:
+        print(f"Error dropping tables: {e}")
+    finally:
+        session.close()
+
+#drop_database()
 list_all_users()
+

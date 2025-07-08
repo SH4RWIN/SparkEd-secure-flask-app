@@ -13,10 +13,3 @@ services:                     # Defines the services (containers) to run.
       - "5432:5432"           # Exposes Postgres on port 5432 on the host machine.
 volumes:                      # Defines named volumes for persistent storage.
   db_data:                    # Name of the volume.
-    driver: local             # Use the local driver (default for Docker).
-    driver_opts:              # Options for the local driver:
-      type: none                  # No special type (bind mount).
-      device: ./postgres/data     # Use the local folder './postgres/data' as the volume source.
-      o: bind                    # Bind-mount the folder instead of using Docker-managed storage.
-
-      

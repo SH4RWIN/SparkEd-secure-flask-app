@@ -29,9 +29,9 @@ class UserDetails(Base):
 
     user_id = Column(Integer, primary_key=True, autoincrement=True)
     
-    full_name = Column(String(150), nullable=False, unique=True)
+    full_name = Column(String(150), nullable=False)
     email = Column(String(255), nullable=False, unique=True)
-    phone = Column(String(20), nullable=False, unique=True)
+    phone = Column(String(20), nullable=False)
     
     # Store hashed password only (e.g., bcrypt hash)
     password = Column(String(255), nullable=False)

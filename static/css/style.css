@@ -198,6 +198,28 @@ img {
   animation: fadeInUp 0.8s ease-out;
 }
 
+.popup-notification {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+  padding: 16px 24px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 9999;
+  font-size: 1.1em;
+  min-width: 350px;
+}
+.popup-notification.warning { background: #fff3cd; color: #856404; border-color: #ffeeba; }
+.popup-notification.success { background: #d4edda; color: #155724; border-color: #c3e6cb; }
+.popup-notification.error   { background: #f8d7da; color: #721c24; border-color: #f5c6cb; }
+.popup-notification a {
+  color: #856404;
+  text-decoration: underline;
+}
+
 .register-container {
   max-width: 420px;
   width: 100%;

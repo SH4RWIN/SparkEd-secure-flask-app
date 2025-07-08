@@ -105,5 +105,59 @@ document.addEventListener('DOMContentLoaded', function() {
       passwordInput.type = this.checked ? 'text' : 'password';
     });
   }
+
+  // Helper to get CSRF token from form
+  function getCsrfToken() {
+    const csrfInput = document.querySelector('#registerForm input[name="csrf_token"]');
+    return csrfInput ? csrfInput.value : '';
+  }
+
+  // Show popup utility
+  function showPopup(message) {
+    var popup = document.getElementById('popup-notification');
+    popup.innerHTML = '<strong>Notice:</strong> ' + message + '<span id="popup-close" style="float:right; cursor:pointer;">&times;</span>';
+    popup.style.display = 'block';
+    document.getElementById('popup-close').onclick = function() {
+      popup.style.display = 'none';
+    };
+    setTimeout(function() {
+      popup.style.display = 'none';
+    }, 5000);
+  }
+
+  // AJAX registration flow
+  document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = this;
+    const formData = new FormData(form);
+    // Add CSRF token if present
+    const csrfToken = getCsrfToken();
+    if (csrfToken) formData.set('csrf_token', csrfToken);
+
+    // 1. Check if email exists
+    const checkEmailData = new FormData();
+    checkEmailData.append('email', form.email.value);
+    if (csrfToken) checkEmailData.set('csrf_token', csrfToken);
+    const response = await fetch('/check_email', {
+      method: 'POST',
+      body: checkEmailData
+    });
+    const result = await response.json();
+    if (result.exists) {
+      showPopup("This email is already registered. Please <a href='/login'>log in</a> or use a different email address.");
+      return;
+    }
+    // 2. Proceed with registration
+    const regResponse = await fetch('/register', {
+      method: 'POST',
+      body: formData
+    });
+    const regResult = await regResponse.json();
+    if (regResult.status === 'success') {
+      window.location.href = regResult.redirect_url;
+    } else {
+      showPopup(regResult.message || "Registration failed. Please try again.");
+    }
+  });
 });
 

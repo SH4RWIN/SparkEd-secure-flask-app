@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, flash, jsonify, session
 from flask_wtf import FlaskForm
-from wtforms import StringField
+from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired, Email, EqualTo
 from dotenv import load_dotenv
 import os
@@ -19,43 +19,52 @@ class RegistrationForm(FlaskForm):
     full_name = StringField('Full Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     phone = StringField('Phone', validators=[DataRequired()])
-    password = StringField('Password', validators=[DataRequired()])
-    confirm = StringField('Confirm', validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
-# When you use Flask-WTF and FlaskForm, form data is parsed automatically from request.form and stored in each field's 
-# .data attribute
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm = PasswordField('Confirm', validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
 
 @app.route('/', methods=['GET'])
 def dashboard():
     return render_template('welcome.html')
 
+# AJAX endpoint to check if email exists
+@app.route('/check_email', methods=['POST'])
+def check_email():
+    email = request.form.get('email')
+    exists = check_email_exists(email)
+    return jsonify({'exists': exists})
+
 # Registration page
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     form = RegistrationForm()
-    if form.validate_on_submit():
-
-        # Check if the email already exists
-        email = form.email.data
-        if check_email_exists(email):
-            return render_template('register.html', form=form, error="Email already exists.")
-
-        # Create the user in the database
-        create_user(
-            email=email,
-            full_name=form.full_name.data,
-            phone=form.phone.data,
-            password=form.password.data,
-            is_admin=0,
-            is_active=1,
-            email_verified=0
-        )
-        return render_template('verification.html', email=email)
-        # After verifications and user creation you can redirect to the email OTP verification page
-    elif request.method == 'GET':
-        return render_template('register.html', form=form)
+    if request.method == 'POST':
+        # AJAX submission expected
+        if form.validate_on_submit():
+            email = form.email.data
+            if check_email_exists(email):
+                return jsonify({'status': 'error', 'message': 'This email is already registered. Please log in or use a different email address.'})
+            # Create the user in the database
+            create_user(
+                email=email,
+                full_name=form.full_name.data,
+                phone=form.phone.data,
+                password=form.password.data,
+                is_admin=0,
+                is_active=1,
+                email_verified=0
+            )
+            session['pending_verification_email'] = email
+            return jsonify({'status': 'success', 'redirect_url': url_for('verify')})
+        else:
+            # Validation failed
+            errors = []
+            for field, msgs in form.errors.items():
+                for msg in msgs:
+                    errors.append(f"{field}: {msg}")
+            return jsonify({'status': 'error', 'message': ' '.join(errors)})
     else:
-        print(form.errors)
-        return "Error Validating!" # render_template('register.html', form=form)
+        # GET request, render the form
+        return render_template('register.html', form=form)
 
 # Login Page
 @app.route('/login', methods=['POST', 'GET'])
@@ -68,7 +77,10 @@ def login():
 # frontend for email verification
 @app.route('/verify', methods=['GET', 'POST'])
 def verify():
-    return render_template('verification.html')
+    email = session.get('pending_verification_email')
+    if not email:
+        return redirect(url_for('register'))
+    return render_template('verification.html', email=email)
 
 if __name__=="__main__":
     app.run(debug=True)
