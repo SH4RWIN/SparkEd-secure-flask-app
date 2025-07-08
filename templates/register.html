@@ -11,7 +11,7 @@
     {% for category, message in messages %}
       <div class="popup-notification {{ category }}" style="display:block;">
         <strong>Notice:</strong> {{ message|safe }}
-        <span class="popup-close" style="float:right; cursor:pointer;">&times;</span>
+        <span class="popup-close" style="float:right; padding: 0 10px 0 10px; cursor:pointer;">&times;</span>
       </div>
     {% endfor %}
   {% endif %}

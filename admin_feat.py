@@ -60,5 +60,5 @@ def clear_user_table():
 
 # drop_database()
 # list_all_users()
-# clear_user_table()
+clear_user_table()
 

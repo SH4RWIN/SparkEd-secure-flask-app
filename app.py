@@ -8,6 +8,7 @@ import logging
 from dbm import check_email_exists, create_user, activate_user_email
 from smtp import send_confirm_email
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+import threading
 
 
 # Configure logging
@@ -64,6 +65,7 @@ def register():
         # AJAX submission expected
         if form.validate_on_submit():
             email = form.email.data
+            # Check if the email already exists
             if check_email_exists(email):
                 return jsonify({'status': 'error', 'message': 'This email is already registered. Please log in or use a different email address.'})
             # Create the user in the database
@@ -76,12 +78,13 @@ def register():
                 is_active=1,
                 email_verified=0
             )
-            # Send confirmation email
-            send_confirm_email(
-                email=email,
-                subject="SparkEd Email Verification",
-                verification_link=create_verification_link(email)
+            # Send confirmation email asynchronously
+            email_thread = threading.Thread(
+                target=send_email_async,
+                args=(email, "SparkEd Email Verification", create_verification_link(email))
             )
+            email_thread.start()
+
             session['pending_verification_email'] = email
             return jsonify({'status': 'success', 'redirect_url': url_for('confirm')})
         else:
@@ -121,7 +124,6 @@ def confirm():
             return redirect(url_for('register'))
         return render_template('confirmation.html', email=email)
 
-
 # Login Page
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -130,6 +132,9 @@ def login():
     else:
         return render_template('login.html')
 
+def send_email_async(email, subject, verification_link):
+    with app.app_context():
+        send_confirm_email(email, subject, verification_link)
 
 
 if __name__=="__main__":
