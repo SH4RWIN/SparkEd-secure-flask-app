@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, Email, EqualTo
 from dotenv import load_dotenv
 import os
 import logging
-from dbm import check_email_exists, create_user, activate_user_email
+from dbm import check_email_exists, create_user, activate_user_email, hash_password, verify_password
 from smtp import send_confirm_email
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 import threading
@@ -42,10 +42,6 @@ def create_verification_link(email):
     craft_url = f"http://{host}:5000/confirm?token={token}"
     return craft_url
 
-@app.route('/test', methods=['GET'])
-def test():
-    return f"{create_verification_link("test@example.com")}"
-
 @app.route('/', methods=['GET'])
 def dashboard():
     return render_template('welcome.html')
@@ -73,7 +69,7 @@ def register():
                 email=email,
                 full_name=form.full_name.data,
                 phone=form.phone.data,
-                password=form.password.data,
+                password=hash_password(form.password.data),     
                 is_admin=0,
                 is_active=1,
                 email_verified=0

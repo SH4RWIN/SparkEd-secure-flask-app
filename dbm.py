@@ -3,6 +3,8 @@ from sqlalchemy import create_engine, Column, Integer, String, Boolean, TIMESTAM
 from sqlalchemy.orm import sessionmaker,declarative_base
 from sqlalchemy.exc import IntegrityError
 from dotenv import load_dotenv
+from werkzeug.security import generate_password_hash, check_password_hash
+
 import os
 from database_init import UserDetails  # Import the UserDetails Schema
 from datetime import datetime, timedelta
@@ -90,3 +92,21 @@ def activate_user_email(email):
         session.rollback()
     finally:
         session.close()
+
+
+# Hashing and Verifying Passwords
+# Currently uses Werkzeug's password hashing
+# But Argon2 is the most recommended hashing algorithm for passwords.
+# It is more secure and resistant to GPU-based attacks.
+def hash_password(password):
+    """Hash a password for storing."""
+    return generate_password_hash(password)
+
+def verify_password(hashed_password, password):
+    """Verify a stored password against one provided by user."""
+    print (check_password_hash(hashed_password, password))
+
+# # Example usage
+# hashed_password = hash_password("my_secure_password")
+# print("Password hashed successfully.\ndecrypting...")
+# verify_password(hashed_password, "my_secure_password")

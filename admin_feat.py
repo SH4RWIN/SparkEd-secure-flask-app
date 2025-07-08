@@ -26,7 +26,7 @@ def list_all_users():
         for u in users:
             print(f"User ID: {u.user_id}, Full Name: {u.full_name}, Email: {u.email}, Phone: {u.phone}, "
                   f"Is Admin: {u.is_admin}, Is Active: {u.is_active}, Email Verified: {u.email_verified}, "
-                  f"Created At: {u.created_at}, Updated At: {u.updated_at}")
+                  f"Created At: {u.created_at}, Updated At: {u.updated_at}, password: {u.password}, ")
     except Exception as e:
         print(f"Error fetching users: {e}")
     finally:
@@ -59,6 +59,8 @@ def clear_user_table():
         session.close()
 
 # drop_database()
-# list_all_users()
-clear_user_table()
+list_all_users()
+# clear_user_table()
+
+
 
