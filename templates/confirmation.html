@@ -148,26 +148,6 @@
   font-size: 1.2rem;
 }
 
-.verification-resend {
-  margin-top: 2rem;
-  animation: fadeInUp 0.8s ease-out 1.2s both;
-}
-
-.verification-resend p {
-  color: #666;
-  margin-bottom: 1rem;
-}
-
-.verification-resend a {
-  color: #F7567C;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.verification-resend a:hover {
-  text-decoration: underline;
-}
-
 .verification-error {
   background: rgba(220, 53, 69, 0.1);
   border: 1px solid #dc3545;
@@ -274,7 +254,7 @@
 
       <!-- Email Display -->
       <div class="verification-email" id="user-email">
-         user@example.com
+          <!-- <strong>Email:</strong> {{ email }} -->
       </div>
 
       <!-- Verification Code Input -->
@@ -314,12 +294,6 @@
          </ul>
       </div>
 
-      <!-- Resend Section -->
-      <div class="verification-resend">
-         <p>Didn't receive the code?</p>
-         <a href="#" id="resend-link">Click here to resend</a>
-      </div>
-
       <!-- Error/Success Messages -->
       <div class="verification-error" id="error-message" style="display: none;">
          Invalid verification code. Please try again.
@@ -335,135 +309,5 @@
       </p>
    </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const codeInputs = document.querySelectorAll('.code-input');
-    const verifyBtn = document.getElementById('verify-btn');
-    const resendBtn = document.getElementById('resend-btn');
-    const resendLink = document.getElementById('resend-link');
-    const errorMessage = document.getElementById('error-message');
-    const successMessage = document.getElementById('success-message');
-    const timerElement = document.getElementById('timer');
-    const loadingSpinner = document.querySelector('.verification-loading');
-
-    let timeLeft = 300; // 5 minutes in seconds
-    let timerInterval;
-
-    // Auto-focus and move to next input
-    codeInputs.forEach((input, index) => {
-        input.addEventListener('input', function(e) {
-            const value = e.target.value;
-            if (value.length === 1) {
-                input.classList.add('filled');
-                if (index < codeInputs.length - 1) {
-                    codeInputs[index + 1].focus();
-                }
-            } else {
-                input.classList.remove('filled');
-            }
-        });
-
-        input.addEventListener('keydown', function(e) {
-            if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                codeInputs[index - 1].focus();
-            }
-        });
-    });
-
-    // Verify button click
-    verifyBtn.addEventListener('click', function() {
-        const code = Array.from(codeInputs).map(input => input.value).join('');
-        
-        if (code.length !== 6) {
-            showError('Please enter the complete 6-digit code.');
-            return;
-        }
-
-        // Show loading
-        loadingSpinner.style.display = 'inline-block';
-        verifyBtn.disabled = true;
-
-        // Simulate verification (replace with actual API call)
-        setTimeout(() => {
-            if (code === '123456') { // Demo code
-                showSuccess();
-            } else {
-                showError('Invalid verification code. Please try again.');
-                clearInputs();
-            }
-            loadingSpinner.style.display = 'none';
-            verifyBtn.disabled = false;
-        }, 2000);
-    });
-
-    // Resend functionality
-    function resendCode() {
-        clearInputs();
-        timeLeft = 300;
-        startTimer();
-        showSuccess('New verification code sent to your email!');
-    }
-
-    resendBtn.addEventListener('click', resendCode);
-    resendLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        resendCode();
-    });
-
-    // Timer functionality
-    function startTimer() {
-        clearInterval(timerInterval);
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                timerElement.textContent = '00:00';
-                showError('Verification code has expired. Please request a new one.');
-            }
-        }, 1000);
-    }
-
-    // Utility functions
-    function showError(message) {
-        errorMessage.textContent = message;
-        errorMessage.style.display = 'block';
-        successMessage.style.display = 'none';
-        setTimeout(() => {
-            errorMessage.style.display = 'none';
-        }, 5000);
-    }
-
-    function showSuccess(message = 'Email verified successfully! Redirecting to login...') {
-        successMessage.textContent = message;
-        successMessage.style.display = 'block';
-        errorMessage.style.display = 'none';
-        
-        if (message.includes('Redirecting')) {
-            setTimeout(() => {
-                window.location.href = '/login';
-            }, 2000);
-        }
-    }
-
-    function clearInputs() {
-        codeInputs.forEach(input => {
-            input.value = '';
-            input.classList.remove('filled');
-        });
-        codeInputs[0].focus();
-    }
-
-    // Initialize
-    startTimer();
-    codeInputs[0].focus();
-
-    // Set demo email (replace with actual user email)
-    document.getElementById('user-email').textContent = 'user@example.com';
-});
-</script>
+<script src="{{ url_for('static', filename='js/verification.js') }}"></script>
 {% endblock %}

@@ -89,16 +89,4 @@
    </form>
 </div>
 <script src="{{ url_for('static', filename='js/registration.js') }}"></script>
-<script>
-document.querySelectorAll('.popup-notification').forEach(function(popup) {
-  // Close on click
-  popup.querySelector('.popup-close').onclick = function() {
-    popup.style.display = 'none';
-  };
-  // Auto-hide after 5 seconds
-  setTimeout(function() {
-    popup.style.display = 'none';
-  }, 5000);
-});
-</script>
 {% endblock %}

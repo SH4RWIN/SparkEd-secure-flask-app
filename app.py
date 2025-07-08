@@ -5,6 +5,8 @@ from wtforms.validators import DataRequired, Email, EqualTo
 from dotenv import load_dotenv
 import os
 from dbm import check_email_exists, create_user
+from smtp import send_confirm_email
+from itsdangerous import URLSafeTimedSerializer
 
 # load environment variables
 load_dotenv()
@@ -12,6 +14,7 @@ load_dotenv()
 app = Flask(__name__)
 # Ensure you have a .env file with SECRET_KEY defined
 secret_key = os.getenv('SECRET_KEY')
+host = os.getenv('HOST', 'localhost')
 app.secret_key = secret_key
 # Set registration form validators
 
@@ -21,6 +24,18 @@ class RegistrationForm(FlaskForm):
     phone = StringField('Phone', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm = PasswordField('Confirm', validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
+
+def create_verification_link(email):
+    serializer = URLSafeTimedSerializer(secret_key)
+    # create a verification link with this token
+    protocol = "https" if os.getenv("FLASK_ENV") == "production" else "http"
+    token = serializer.dumps(email, salt='email-verification')
+    craft_url = f"http://{host}:5000/verify?token={token}"
+    return craft_url
+
+@app.route('/test', methods=['GET'])
+def test():
+    return f"{create_verification_link("test@example.com")}"
 
 @app.route('/', methods=['GET'])
 def dashboard():
@@ -53,8 +68,14 @@ def register():
                 is_active=1,
                 email_verified=0
             )
+            # Send confirmation email
+            send_confirm_email(
+                email=email,
+                subject="SparkEd Email Verification",
+                verification_code=create_verification_link(email)
+            )
             session['pending_verification_email'] = email
-            return jsonify({'status': 'success', 'redirect_url': url_for('verify')})
+            return jsonify({'status': 'success', 'redirect_url': url_for('confirm')})
         else:
             # Validation failed
             errors = []
@@ -74,13 +95,14 @@ def login():
     else:
         return render_template('login.html')
 
-# frontend for email verification
-@app.route('/verify', methods=['GET', 'POST'])
-def verify():
+
+# Route for email confirmation
+@app.route('/confirm', methods=['GET'])
+def confirm():
     email = session.get('pending_verification_email')
     if not email:
         return redirect(url_for('register'))
-    return render_template('verification.html', email=email)
+    return render_template('confirmation.html', email=email)
 
 if __name__=="__main__":
     app.run(debug=True)
