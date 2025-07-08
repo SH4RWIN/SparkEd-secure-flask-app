@@ -89,4 +89,19 @@
    </form>
 </div>
 <script src="{{ url_for('static', filename='js/registration.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const closeButtons = document.getElementsByClassName('popup-close');
+
+    Array.from(closeButtons).forEach(button => {
+        button.addEventListener('click', function() {
+            const notification = this.closest('.popup-notification');
+            if (notification) {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.style.display = 'none', 300); // Fade-out effect
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

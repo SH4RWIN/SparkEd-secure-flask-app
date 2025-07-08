@@ -95,15 +95,6 @@ def register():
         # GET request, render the form
         return render_template('register.html', form=form)
 
-# Login Page
-@app.route('/login', methods=['POST', 'GET'])
-def login():
-    if request.method == "POST":
-        pass    # add the login handling logic
-    else:
-        return render_template('login.html')
-
-
 # Route for email confirmation
 @app.route('/confirm', methods=['GET', 'POST'])
 def confirm():
@@ -113,10 +104,9 @@ def confirm():
         serializer = URLSafeTimedSerializer(secret_key)
         try:
             email = serializer.loads(token, salt='email-verification', max_age=300) # Token valid for 5 minutes
-            # TODO: Implement activate_user_email(email) in dbm.py
-            # activate_user_email(email)
+            activate_user_email(email)  # Activate the user's email in the database by assigning email_verified=1
             session.pop('pending_verification_email', None) # Clear session after verification
-            flash('Email successfully verified! You can now log in.', 'success')
+            flash('Email successfully verified! You can now log in.', 'success')    # Redirect to login page and say success
             return redirect(url_for('login'))
         except SignatureExpired:
             flash('The verification link has expired.', 'danger')
@@ -130,6 +120,17 @@ def confirm():
         if not email:
             return redirect(url_for('register'))
         return render_template('confirmation.html', email=email)
+
+
+# Login Page
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == "POST":
+        pass    # add the login handling logic
+    else:
+        return render_template('login.html')
+
+
 
 if __name__=="__main__":
     app.run(debug=True)

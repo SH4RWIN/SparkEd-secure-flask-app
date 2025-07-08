@@ -6,6 +6,16 @@
 {% endblock %}
 
 {% block body %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="popup-notification {{ category }}" style="display:block;">
+        <strong>Notice:</strong> {{ message|safe }}
+        <span class="popup-close" style="float:right; cursor:pointer;">&times;</span>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 <div class="login">
    <form action="" class="container">
       <h1 class="login__title">Login</h1>
@@ -39,4 +49,20 @@
       </p>
    </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const closeButtons = document.getElementsByClassName('popup-close');
+
+    Array.from(closeButtons).forEach(button => {
+        button.addEventListener('click', function() {
+            const notification = this.closest('.popup-notification');
+            if (notification) {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.style.display = 'none', 300); // Fade-out effect
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

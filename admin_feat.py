@@ -58,7 +58,7 @@ def clear_user_table():
     finally:
         session.close()
 
-#drop_database()
-list_all_users()
+# drop_database()
+# list_all_users()
 # clear_user_table()
 
