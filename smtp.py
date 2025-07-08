@@ -1,9 +1,17 @@
+import logging
 from flask import Flask
 from flask_mail import Mail, Message
 import os
 import dotenv
 
 dotenv.load_dotenv()
+
+# Configure logging
+logging.basicConfig(
+    filename='email_log.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 app = Flask(__name__)   
 
@@ -15,7 +23,7 @@ app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
 app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL') == 'True'
 mail = Mail(app)
 
-verification_email_html = '''
+confirmation_email_html = '''
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,10 +47,11 @@ verification_email_html = '''
 </html>
 '''
 
+
 def send_confirm_email(email, subject, verification_link):
     
     msg = Message(subject, sender=app.config['MAIL_USERNAME'], recipients=[email])
-    msg.html = verification_email_html.format(verification_link=verification_link)
+    msg.html = confirmation_email_html.format(verification_link=verification_link)
 
     try:
         with app.app_context():
@@ -51,8 +60,10 @@ def send_confirm_email(email, subject, verification_link):
                 raise Exception("Mail instance is not initialized.")
             # Send the email
             mail.send(msg)
+            logging.info(f"Successfully sent email to {email} with subject '{subject}'")
         return True
     except Exception as e:
+        logging.error(f"Failed to send email to {email} with subject '{subject}': {e}")
         print(f"Failed to send email: {e}")
         return False
 

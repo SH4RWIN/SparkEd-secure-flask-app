@@ -73,3 +73,20 @@ def create_user(email, full_name, phone, password, is_admin=0, is_active=0, emai
 # create_user(email="test@example.com", full_name="Test User", phone="1234567890", password="hashed_password" \
 #             , is_admin=0, is_active=1, email_verified=0)
 
+# activate user email
+def activate_user_email(email):
+    session = Session()
+    try:
+        user = session.query(UserDetails).filter_by(email=email).first()
+        if user:
+            user.email_verified = 1
+            session.commit()
+            print(f"Email {email} activated successfully.")
+        else:
+            print(f"Email {email} not found.")
+            return "Email not found."    
+    except Exception as e:
+        print(f"Error activating email: {e}")
+        session.rollback()
+    finally:
+        session.close()

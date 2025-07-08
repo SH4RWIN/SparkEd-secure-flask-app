@@ -45,6 +45,20 @@ def drop_database():
     finally:
         session.close()
 
+# function to clear the table
+def clear_user_table():
+    session = Session()
+    try:
+        session.query(UserDetails).delete()
+        session.commit()
+        print("User table cleared successfully.")
+    except Exception as e:
+        print(f"Error clearing user table: {e}")
+        session.rollback()
+    finally:
+        session.close()
+
 #drop_database()
 list_all_users()
+# clear_user_table()
 

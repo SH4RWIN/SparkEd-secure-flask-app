@@ -4,10 +4,18 @@ from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired, Email, EqualTo
 from dotenv import load_dotenv
 import os
-from dbm import check_email_exists, create_user
+import logging
+from dbm import check_email_exists, create_user, activate_user_email
 from smtp import send_confirm_email
-from itsdangerous import URLSafeTimedSerializer
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
+
+# Configure logging
+logging.basicConfig(
+    filename='email_log.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 # load environment variables
 load_dotenv()
 
@@ -30,7 +38,7 @@ def create_verification_link(email):
     # create a verification link with this token
     protocol = "https" if os.getenv("FLASK_ENV") == "production" else "http"
     token = serializer.dumps(email, salt='email-verification')
-    craft_url = f"http://{host}:5000/verify?token={token}"
+    craft_url = f"http://{host}:5000/confirm?token={token}"
     return craft_url
 
 @app.route('/test', methods=['GET'])
@@ -72,7 +80,7 @@ def register():
             send_confirm_email(
                 email=email,
                 subject="SparkEd Email Verification",
-                verification_code=create_verification_link(email)
+                verification_link=create_verification_link(email)
             )
             session['pending_verification_email'] = email
             return jsonify({'status': 'success', 'redirect_url': url_for('confirm')})
@@ -97,12 +105,31 @@ def login():
 
 
 # Route for email confirmation
-@app.route('/confirm', methods=['GET'])
+@app.route('/confirm', methods=['GET', 'POST'])
 def confirm():
-    email = session.get('pending_verification_email')
-    if not email:
-        return redirect(url_for('register'))
-    return render_template('confirmation.html', email=email)
+    token = request.args.get('token')
+
+    if token:
+        serializer = URLSafeTimedSerializer(secret_key)
+        try:
+            email = serializer.loads(token, salt='email-verification', max_age=300) # Token valid for 5 minutes
+            # TODO: Implement activate_user_email(email) in dbm.py
+            # activate_user_email(email)
+            session.pop('pending_verification_email', None) # Clear session after verification
+            flash('Email successfully verified! You can now log in.', 'success')
+            return redirect(url_for('login'))
+        except SignatureExpired:
+            flash('The verification link has expired.', 'danger')
+            return redirect(url_for('register'))
+        except BadSignature:
+            flash('Invalid verification link.', 'danger')
+            return redirect(url_for('register'))
+    else:
+        # If no token, check session (for users who just registered and landed on the confirmation page)
+        email = session.get('pending_verification_email')
+        if not email:
+            return redirect(url_for('register'))
+        return render_template('confirmation.html', email=email)
 
 if __name__=="__main__":
     app.run(debug=True)
