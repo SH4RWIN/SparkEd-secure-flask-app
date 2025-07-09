@@ -4,6 +4,7 @@
 <title>SparkEd - Register</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@latest/fonts/remixicon.css" rel="stylesheet">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
 {% endblock %}
 
 {% block body %}
@@ -83,6 +84,11 @@
          </div>
       </div>
       <button type="submit" class="login__button">Register</button>
+      <div class="turnstilebox">
+         <!-- The following line controls and configures the Turnstile widget. -->
+         <div class="cf-turnstile" id="turnstile-id" data-callback="javascriptCallback" data-sitekey="{{ sitekey }}" data-theme="light"></div>
+         <!-- end. -->
+      </div>
       <p class="login__register">
          Already have an account? <a href="/login">Login</a>
       </p>

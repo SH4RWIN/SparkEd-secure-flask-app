@@ -134,30 +134,54 @@ def confirm():
             return redirect(url_for('register'))
         return render_template('confirmation.html', email=email)
 
-# Login Page
-@app.route('/login', methods=['POST', 'GET'])
-def login():
-    form = LoginForm()
-    if request.method == "POST":
-        email = request.form.get('email')
-        password = request.form.get('password')
-        if not email or not password:
-            # Return JSON response for AJAX
-            return jsonify({'status': 'error', 'message': 'Email and Password are required.'}), 400 # Use 400 status code for bad request
-
-        user_match = check_user_credentials(email, password)
-        if user_match:
-            session['user_email'] = user_match.email  # Store user email in session
-            return jsonify({'status': 'success', 'redirect_url': url_for('dashboard')}) # Assuming dashboard is the post-login page
-        else:
-            return jsonify({'status': 'error', 'message': 'Invalid email or password.'}), 401 # Use 401 status code for unauthorized
-
-    else:
-        return render_template('login.html', form=form)
-
 def send_email_async(email, subject, verification_link):
     with app.app_context():
         send_confirm_email(email, subject, verification_link)
+
+
+# Login Page
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        form = LoginForm()
+        return render_template('login.html', form=form, sitekey=CF_TURNSTILE_SITEKEY)
+    
+    if request.method == 'POST':
+        # Get Turnstile token from form
+        turnstile_token = request.form.get('cf-turnstile-response')
+
+        # Verify the Turnstile token
+        verify_url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
+        payload = {
+            'secret': CF_TURNSTILE_SECRETKEY,
+            'response': turnstile_token,
+            'remoteip': request.remote_addr  # optional but recommended
+        }
+        try:
+            response = requests.post(verify_url, data=payload)
+            result = response.json()
+
+            if result.get("success"):
+                # Token is valid, proceed with login logic
+                email = request.form.get('email')
+                password = request.form.get('password')
+
+                if not email or not password:
+                    return jsonify({'status': 'error', 'message': 'Email and Password are required.'}), 400
+
+                user_match = check_user_credentials(email, password)
+                if user_match:
+                    session['user_email'] = user_match.email  # Store user email in session
+                    return jsonify({'status': 'success', 'redirect_url': url_for('dashboard')})
+                else:
+                    return jsonify({'status': 'error', 'message': 'Invalid email or password.'}), 401
+            else:
+                # Token is invalid
+                return jsonify({'status': 'error', 'message': 'human verification failed.'}), 400
+        except Exception as e:
+            # Handle potential errors during the API call
+            logging.error(f"Turnstile verification failed: {e}")
+            return jsonify({'status': 'error', 'message': 'unknown error occured!'}), 500
 
 
 @app.route('/dashboard', methods=['GET'])
@@ -175,40 +199,6 @@ def dashboard():
 
     return render_template('dashboard.html', user=user)
 
-@app.route('/test_submit', methods=['POST', 'GET'])
-def test_submit():
-    form = LoginForm()
-    if request.method == 'POST':
-        # Get Turnstile token from form
-        turnstile_token = request.form.get('cf-turnstile-response') 
-
-        # Verify the Turnstile token
-        verify_url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
-        payload = {
-            'secret': CF_TURNSTILE_SECRETKEY,
-            'response': turnstile_token,
-            'remoteip': request.remote_addr  # optional but recommended
-        }
-
-        try:
-            response = requests.post(verify_url, data=payload)
-            result = response.json()
-            print(result)   # remove!!!
-
-            if result.get("success"):
-                # Token is valid, proceed with your test logic here
-                # For now, just return a success message
-                print("TEST PASSED!!!") # REMOVE !!!!
-                return 'Turnstile verification successful', 200
-            else:
-                # Token is invalid
-                return 'Turnstile verification failed', 400
-        except Exception as e:
-            # Handle potential errors during the API call
-            return f'Error verifying Turnstile token: {str(e)}', 500
-    
-    if request.method == 'GET':
-        return render_template('test.html', sitekey=CF_TURNSTILE_SITEKEY, form=form)
 
 if __name__=="__main__":
     app.run(debug=True)
