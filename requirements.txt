@@ -1,0 +1,9 @@
+Flask
+Flask-WTF
+python-dotenv
+requests
+SQLAlchemy
+dotenv
+logging
+werkzeug
+datetime

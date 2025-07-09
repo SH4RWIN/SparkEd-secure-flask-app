@@ -4,12 +4,14 @@ services:                     # Defines the services (containers) to run.
   db:                         # Name of the service (here, a database).
     image: postgres:latest    # Use the latest official Postgres image from Docker Hub.
     environment:              # Set environment variables for the container:
-      POSTGRES_USER: user         # - Database username will be 'user'
-      POSTGRES_PASSWORD: password # - Database password will be 'password'
-      POSTGRES_DB: mydatabase     # - Database name will be 'mydatabase'
+      POSTGRES_USER: user         # - Database username
+      POSTGRES_PASSWORD: password # - Database password
+      POSTGRES_DB: mydatabase     # - Database name
+    restart: unless-stopped     # Restart the container unless it is explicitly stopped.
     volumes:                  # Mounts a volume for persistent data:
       - db_data:/var/lib/postgresql/data # Maps the named volume 'db_data' to the Postgres data directory in the container.
     ports:                   # Maps container ports to host ports:
-      - "5432:5432"           # Exposes Postgres on port 5432 on the host machine.
-volumes:                      # Defines named volumes for persistent storage.
-  db_data:                    # Name of the volume.
+      - "5432:5432"           # Exposes Postgres on port 5432 on the host machine
+
+volumes:              # Defines named volumes for persistent storage.
+  db_data:                    # Name of the volume for database data.

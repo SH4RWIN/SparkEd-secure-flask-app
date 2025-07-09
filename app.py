@@ -26,14 +26,31 @@ logging.basicConfig(
 load_dotenv()
 
 app = Flask(__name__)
-# Ensure you have a .env file with SECRET_KEY defined
+
+# SECRET_KEY for token generation in email verifcation
 secret_key = os.getenv('SECRET_KEY')
-host = os.getenv('HOST', 'localhost')
 app.secret_key = secret_key
+
+# link variables
+host = os.getenv('HOST', 'localhost')
+protocol = os.getenv('PROTOCOL', 'http')
 
 #TURNSTILE KEYS
 CF_TURNSTILE_SITEKEY = os.getenv('CF_TURNSTILE_SITEKEY')
 CF_TURNSTILE_SECRETKEY = os.getenv('CF_TURNSTILE_SECRETKEY')
+
+# Uncomment these when enabling https
+# app.config['SESSION_COOKIE_SECURE'] = True  # Required for HTTPS
+# app.config['WTF_CSRF_SSL_STRICT'] = True
+# app.config['WTF_CSRF_TIME_LIMIT'] = 3600
+# app.config['WTF_CSRF_CHECK_DEFAULT'] = True
+# app.config['DEBUG'] = False
+
+# @app.before_request
+# def force_https():
+#     if request.url.startswith('http://'):
+#         secure_url = request.url.replace("http://", "https://", 1)
+#         return redirect(secure_url, code=301)
 
 # Set registration form validators
 class RegistrationForm(FlaskForm):
@@ -53,7 +70,7 @@ def create_verification_link(email):
     # create a verification link with this token
     protocol = "https" if os.getenv("FLASK_ENV") == "production" else "http"
     token = serializer.dumps(email, salt='email-verification')
-    craft_url = f"http://{host}:5000/confirm?token={token}"
+    craft_url = f"{protocol}://{host}:5000/confirm?token={token}"
     return craft_url
 
 @app.route('/', methods=['GET'])
@@ -229,5 +246,5 @@ def add_no_cache_headers(response):
     return response
 
 if __name__=="__main__":
-    app.run(debug=True)
+    app.run()
 
