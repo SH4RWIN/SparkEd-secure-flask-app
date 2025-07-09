@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Show password toggle logic
   const showPwCheckbox = document.getElementById('show-password');
-  if (showPwCheckbox) {
+  if (showPwCheckbox && passwordInput) { // Use the passwordInput defined at the top
     showPwCheckbox.addEventListener('change', function() {
       passwordInput.type = this.checked ? 'text' : 'password';
     });

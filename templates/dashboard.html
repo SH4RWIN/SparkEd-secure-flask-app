@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>SparkEd - Dashboard</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+  /* Dashboard Animations and Interactivity */
+  .dashboard-card {
+    background: #FCFCFC;
+    border-radius: 1.2rem;
+    box-shadow: 0 4px 16px rgba(247,86,124,0.08);
+    border: 1.5px solid #F7567C;
+    padding: 2rem 1.5rem;
+    animation: fadeInUp 0.8s cubic-bezier(.23,1.01,.32,1) 0.2s both;
+    transition: box-shadow 0.3s, transform 0.3s;
+  }
+  .dashboard-card:hover {
+    box-shadow: 0 8px 32px rgba(247,86,124,0.18);
+    transform: translateY(-4px) scale(1.015);
+    border-color: #d6456a;
+  }
+  .dashboard-fields dt {
+    color: #F7567C;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  .dashboard-fields dd {
+    border-radius: 0.5rem;
+    padding: 0.2rem 0.7rem;
+    transition: background 0.3s, color 0.3s, transform 0.3s;
+    cursor: pointer;
+  }
+  .dashboard-fields dd:hover {
+    background: #fff3cd;
+    color: #F7567C;
+    transform: scale(1.05);
+  }
+  .dashboard-welcome {
+    animation: fadeIn 1s cubic-bezier(.23,1.01,.32,1) 0.1s both;
+    margin-bottom: 1.2rem;
+    text-align: center;
+    color: #F7567C;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .dashboard-header {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-size: 1.1rem;
+    animation: fadeIn 1s cubic-bezier(.23,1.01,.32,1) 0.3s both;
+  }
+  @media (max-width: 600px) {
+    .dashboard-card { padding: 1.2rem 0.5rem; }
+    .dashboard-header { padding: 1rem; font-size: 1rem; }
+    .dashboard-fields { font-size: 0.98rem; }
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="welcome">
+  <div class="container" style="max-width: 600px; margin: 40px auto;">
+    <h2 class="login__title dashboard-welcome">Welcome, {{ user.full_name }}!</h2>
+    <div class="dashboard-header">
+      <strong>Your SparkEd Dashboard</strong>
+    </div>
+    <div class="dashboard-card">
+      <dl class="dashboard-fields" style="display: grid; grid-template-columns: 1fr 2fr; row-gap: 1.1rem; column-gap: 0.5rem; font-size: 1.05rem;">
+        <dt>User ID:</dt><dd>{{ user.id }}</dd>
+        <dt>Full Name:</dt><dd>{{ user.full_name }}</dd>
+        <dt>Email:</dt><dd>{{ user.email }}</dd>
+        <dt>Phone:</dt><dd>{{ user.phone }}</dd>
+        <dt>Is Admin:</dt><dd>{{ 'Yes' if user.is_admin else 'No' }}</dd>
+        <dt>Is Active:</dt><dd>{{ 'Yes' if user.is_active else 'No' }}</dd>
+        <dt>Email Verified:</dt><dd>{{ 'Yes' if user.email_verified else 'No' }}</dd>
+        <dt>Created At:</dt><dd>{{ user.created_at }}</dd>
+        <dt>Updated At:</dt><dd>{{ user.updated_at }}</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+{% endblock %}

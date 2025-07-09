@@ -1,22 +1,21 @@
 <!DOCTYPE html>
-   <html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        {% block head %}{% endblock %}
-   </head>
-   <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="/" class="navbar-brand">SparkEd</a>
-            <ul class="navbar-nav">
-                <li><a href="/login" class="{% if request.endpoint == 'login' %}active{% endif %}">Login</a></li>
-                <li><a href="/register" class="{% if request.endpoint == 'register' %}active{% endif %}">Register</a></li>
-            </ul>
-        </div>
-    </nav>
-    
-    {% block body %}{% endblock %}
-   </body>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     {% block head %}{% endblock %}
+</head>
+<body>
+ <!-- Navbar -->
+ <nav class="navbar">
+     <div class="navbar-container">
+         <a href="/" class="navbar-brand">SparkEd</a>
+         <ul class="navbar-nav">
+             <li><a href="/login" class="{% if request.endpoint == 'login' %}active{% endif %}">Login</a></li>
+             <li><a href="/register" class="{% if request.endpoint == 'register' %}active{% endif %}">Register</a></li>
+         </ul>
+     </div>
+ </nav>
+{% block body %}{% endblock %}
+</body>
 </html>

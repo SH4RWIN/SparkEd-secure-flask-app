@@ -5,12 +5,17 @@ from wtforms.validators import DataRequired, Email, EqualTo
 from dotenv import load_dotenv
 import os
 import logging
-from dbm import check_email_exists, create_user, activate_user_email, hash_password, verify_password
+from dbm import check_email_exists, create_user, activate_user_email, check_user_credentials, get_user_by_email
+from werkzeug.security import generate_password_hash
+
 from smtp import send_confirm_email
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 import threading
 
-
+# Hashing and Verifying Passwords
+# Currently uses Werkzeug's password hashing
+# But Argon2 is the most recommended hashing algorithm for passwords.
+# It is more secure and resistant to GPU-based attacks.
 # Configure logging
 logging.basicConfig(
     filename='email_log.log',
@@ -34,6 +39,11 @@ class RegistrationForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     confirm = PasswordField('Confirm', validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
 
+class LoginForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+
+# create link to sent as email confitmation
 def create_verification_link(email):
     serializer = URLSafeTimedSerializer(secret_key)
     # create a verification link with this token
@@ -43,7 +53,7 @@ def create_verification_link(email):
     return craft_url
 
 @app.route('/', methods=['GET'])
-def dashboard():
+def welcome():
     return render_template('welcome.html')
 
 # AJAX endpoint to check if email exists
@@ -69,7 +79,7 @@ def register():
                 email=email,
                 full_name=form.full_name.data,
                 phone=form.phone.data,
-                password=hash_password(form.password.data),     
+                password=generate_password_hash(form.password.data),
                 is_admin=0,
                 is_active=1,
                 email_verified=0
@@ -123,15 +133,43 @@ def confirm():
 # Login Page
 @app.route('/login', methods=['POST', 'GET'])
 def login():
+    form = LoginForm()
     if request.method == "POST":
-        pass    # add the login handling logic
+        email = request.form.get('email')
+        password = request.form.get('password')
+        if not email or not password:
+            # Return JSON response for AJAX
+            return jsonify({'status': 'error', 'message': 'Email and Password are required.'}), 400 # Use 400 status code for bad request
+
+        user_match = check_user_credentials(email, password)
+        if user_match:
+            session['user_email'] = user_match.email  # Store user email in session
+            return jsonify({'status': 'success', 'redirect_url': url_for('dashboard')}) # Assuming dashboard is the post-login page
+        else:
+            return jsonify({'status': 'error', 'message': 'Invalid email or password.'}), 401 # Use 401 status code for unauthorized
+
     else:
-        return render_template('login.html')
+        return render_template('login.html', form=form)
 
 def send_email_async(email, subject, verification_link):
     with app.app_context():
         send_confirm_email(email, subject, verification_link)
 
+
+@app.route('/dashboard', methods=['GET'])
+def dashboard():
+    user_email = session.get('user_email')
+    # Redirect non-logged in users to login
+    if not user_email:
+        return redirect(url_for('login'))
+
+    user = get_user_by_email(user_email)
+    if not user:
+        # This case should ideally not happen if the user_email in session is valid
+        flash('User not found.', 'danger')
+        return redirect(url_for('login'))
+
+    return render_template('dashboard.html', user=user)
 
 if __name__=="__main__":
     app.run(debug=True)

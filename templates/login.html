@@ -3,8 +3,8 @@
 {% block head %}
 <title>SparkEd - Ignition of Knowledge</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@latest/fonts/remixicon.css" rel="stylesheet">
 {% endblock %}
-
 {% block body %}
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -17,7 +17,8 @@
   {% endif %}
 {% endwith %}
 <div class="login">
-   <form action="" class="container">
+   <form id="loginform" autocomplete="off" method="POST" class="container">
+      {{ form.csrf_token }}
       <h1 class="login__title">Login</h1>
       <div class="login__content">
          <div class="login__box">
@@ -38,8 +39,7 @@
       </div>
       <div class="login__check">
          <div class="login__check-group">
-            <input type="checkbox" class="login__check-input" id="login-check">
-            <label for="login-check" class="login__check-label">Remember me</label>
+            <!-- just preserving this for a keeping a small flexbox layout -->
          </div>
          <a href="#" class="login__forgot">Forgot Password?</a>
       </div>
@@ -50,19 +50,5 @@
    </form>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const closeButtons = document.getElementsByClassName('popup-close');
-
-    Array.from(closeButtons).forEach(button => {
-        button.addEventListener('click', function() {
-            const notification = this.closest('.popup-notification');
-            if (notification) {
-                notification.style.opacity = '0';
-                setTimeout(() => notification.style.display = 'none', 300); // Fade-out effect
-            }
-        });
-    });
-});
-</script>
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
 {% endblock %}

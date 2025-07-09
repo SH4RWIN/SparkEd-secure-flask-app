@@ -39,8 +39,26 @@ def check_email_exists(email):
         return False
     finally:
         session.close()
-
 # print(check_email_exists("test@example.com"))
+
+
+# Check user credentials for login
+def check_user_credentials(email, password):
+    session = Session()
+    try:
+        user = session.query(UserDetails).filter_by(email=email).first()
+        if user and check_password_hash(user.password, password):
+            print(f"Credentials match for user {email}")
+            return user  # Return the user object on successful login
+        else:
+            print(f"Credentials do not match for user {email} or user not found.")
+            return None  # Return None if user not found or password incorrect
+    except Exception as e:
+        print(f"Error checking user credentials: {e}")
+        return None
+    finally:
+        session.close()
+
 
 def create_user(email, full_name, phone, password, is_admin=0, is_active=0, email_verified=0, reset_token=0, reset_token_expiry=0):
     """Create a new user in the database."""
@@ -94,17 +112,17 @@ def activate_user_email(email):
         session.close()
 
 
-# Hashing and Verifying Passwords
-# Currently uses Werkzeug's password hashing
-# But Argon2 is the most recommended hashing algorithm for passwords.
-# It is more secure and resistant to GPU-based attacks.
-def hash_password(password):
-    """Hash a password for storing."""
-    return generate_password_hash(password)
-
-def verify_password(hashed_password, password):
-    """Verify a stored password against one provided by user."""
-    print (check_password_hash(hashed_password, password))
+def get_user_by_email(email):
+    """Retrieve a user from the database by email."""
+    session = Session()
+    try:
+        user = session.query(UserDetails).filter_by(email=email).first()
+        return user
+    except Exception as e:
+        print(f"Error retrieving user by email: {e}")
+        return None
+    finally:
+        session.close()
 
 # # Example usage
 # hashed_password = hash_password("my_secure_password")
