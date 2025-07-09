@@ -8,3 +8,5 @@ logging
 werkzeug
 datetime
 gunicorn
+psycopg2
+flask_mail

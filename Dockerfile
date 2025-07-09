@@ -9,8 +9,11 @@ COPY requirements.txt ./
 
 # Install the Python dependencies
 # Use --no-cache-dir to avoid storing cache data, reducing image size
+# Installing system dependencies required for building Python packages
+# libpq-dev is required for PostgreSQL support in Python
 # apt-get update/upgrade and clean are good practices for slim images
 RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y libpq-dev gcc && \
     pip install --no-cache-dir -r requirements.txt && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
