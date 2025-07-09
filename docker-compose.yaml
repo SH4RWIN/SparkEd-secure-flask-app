@@ -9,9 +9,24 @@ services:                     # Defines the services (containers) to run.
       POSTGRES_DB: mydatabase     # - Database name
     restart: unless-stopped     # Restart the container unless it is explicitly stopped.
     volumes:                  # Mounts a volume for persistent data:
-      - db_data:/var/lib/postgresql/data # Maps the named volume 'db_data' to the Postgres data directory in the container.
-    ports:                   # Maps container ports to host ports:
-      - "5432:5432"           # Exposes Postgres on port 5432 on the host machine
+      - pg_data:/var/lib/postgresql/data # Maps the named volume 'pg_data' to the Postgres data directory in the container.
+    networks:                 # Connects the database service to the 'flask-app' network.
+      - flask-app
 
-volumes:              # Defines named volumes for persistent storage.
-  db_data:                    # Name of the volume for database data.
+  flask_app:                # Name of the service for the Flask application.
+    build: .                  # Build the Docker image using the Dockerfile in the current directory.
+    ports:                    # Maps container ports to host ports:
+      - "5000:5000"           # Expose the Flask app on port 5000 on the host machine.
+    env_file:                 # Load environment variables from the .env file.
+      - .env
+    networks:                 # Connects the Flask app service to the 'flask-app' network.
+      - flask-app
+    depends_on:               # Ensure the database service starts before the Flask app.
+      - db
+
+volumes:                      # Defines named volumes for persistent storage.
+  pg_data:                    # Name of the volume for database data.
+
+networks:                     # Defines the networks to be used by the services.
+  flask-app:                  # Name of the network.
+    driver: bridge            # Use the default bridge network driver.

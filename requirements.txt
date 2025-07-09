@@ -7,3 +7,4 @@ dotenv
 logging
 werkzeug
 datetime
+gunicorn
