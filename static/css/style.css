@@ -396,7 +396,6 @@ img {
   color: #F7567C;
 }
 
-
 /* Remove browser autofill background for inputs */
 .login__input,
 .login__input:-webkit-autofill,
@@ -612,16 +611,17 @@ select.login__input option {
 }
 
 .register-container .login__label {
-  top: 15px; /* Adjusted initial top position */
-  /* ...existing transition and color... */
+  top: 1rem; /* Align with input padding */
 }
 
 /* Ensure the label adjusts correctly on focus/fill for registration inputs */
 .register-container .login__input:focus + .login__label,
 .register-container .login__input:not(:placeholder-shown).login__input:not(:focus) + .login__label {
-  top: -12px; /* Keep the existing top value */
-  font-size: 0.813rem; /* Keep the existing font size */
-  color: #F7567C; /* Keep the existing color */
+  top: -0.5rem; /* More natural positioning */
+  font-size: 0.813rem;
+  color: #F7567C;
+  background-color: white; /* Ensure label is visible over the input */
+  padding: 0 0.25rem; /* Add some padding around the label */
 }
 
 .pw-valid { color: #28a745 !important; }
@@ -640,4 +640,28 @@ select.login__input option {
   color: #F7567C;
   user-select: none;
   z-index: 2;
+}
+
+/* Adjustments for Login Page Inputs */
+.container .login__box-input .login_email__input {
+  padding-block: 1rem; /* Match registration form padding */
+}
+
+.container .login__box-input .login__label {
+  top: 1rem; /* Match registration form label position */
+}
+
+/* Ensure the label adjusts correctly on focus/fill for login inputs */
+.container .login_email__input:focus + .login__label,
+.container .login_email__input:not(:placeholder-shown).login_email__input:not(:focus) + .login__label {
+  top: -0.5rem; /* Match registration form adjusted position */
+  font-size: 0.813rem; /* Match registration form font size */
+  color: #F7567C; /* Match registration form color */
+  background-color: white; /* Match registration form background */
+  padding: 0 0.25rem; /* Match registration form padding */
+}
+
+.turnstilebox{
+  display: flex;
+  justify-content: center;
 }

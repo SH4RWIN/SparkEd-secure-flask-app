@@ -214,6 +214,19 @@ def dashboard():
 
     return render_template('dashboard.html', user=user)
 
+@app.route('/logout', methods=['GET'])
+def logout():
+    session.clear()
+    return redirect(url_for('welcome'))
+
+# Even after logout, the browser might show cached pages when the user hits the back button. 
+# To prevent this, add cache-control headers
+@app.after_request
+def add_no_cache_headers(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 if __name__=="__main__":
     app.run(debug=True)

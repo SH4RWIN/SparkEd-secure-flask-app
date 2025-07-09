@@ -59,12 +59,22 @@
     .dashboard-header { padding: 1rem; font-size: 1rem; }
     .dashboard-fields { font-size: 0.98rem; }
   }
+  .logout-button {
+    display: flex;
+    justify-content: center;
+    font-size: 1.5rem; 
+    width: 100%;
+    background-color: #F7567C;
+    margin-top: 20px;
+    border-radius: 17px;
+    padding: 20px;
+  }
 </style>
 {% endblock %}
 
 {% block body %}
 <div class="welcome">
-  <div class="container" style="max-width: 600px; margin: 40px auto;">
+  <div class="container" style="max-width: 600px; margin: 40px auto; position: relative;">
     <h2 class="login__title dashboard-welcome">Welcome, {{ user.full_name }}!</h2>
     <div class="dashboard-header">
       <strong>Your SparkEd Dashboard</strong>
@@ -80,6 +90,9 @@
         <dt>Created At:</dt><dd>{{ user.created_at }}</dd>
         <dt>Updated At:</dt><dd>{{ user.updated_at }}</dd>
       </dl>
+    </div>
+    <div class="logout-button">
+      <a href="/logout" style="text-decoration: none; color: #fff3cd">Logout</a>
     </div>
   </div>
 </div>
