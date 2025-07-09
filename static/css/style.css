@@ -249,7 +249,6 @@ img {
 .login__box {
   grid-template-columns: max-content 1fr;
   align-items: center;
-  column-gap: 0.75rem;
   border-bottom: 2px solid #F7567C;
 }
 
@@ -260,6 +259,15 @@ img {
 }
 
 .login__input {
+  width: 150%;
+  padding-block: 0.8rem;
+  background: none;
+  color: #333;
+  position: relative;
+  z-index: 1;
+}
+
+.login_email__input{
   width: 100%;
   padding-block: 0.8rem;
   background: none;
@@ -270,6 +278,7 @@ img {
 
 .login__box-input {
   position: relative;
+  
 }
 
 .login__label {
@@ -288,6 +297,10 @@ img {
   transform: translateY(-50%);
   z-index: 10;
   cursor: pointer;
+}
+
+.show-password-toggle {
+  margin-right: -120px;
 }
 
 .login__box:nth-child(2) input {
@@ -370,18 +383,19 @@ img {
 }
 
 /* Input focus move up label */
-.login__input:focus + .login__label {
+.login__input:focus + .login__label, .login_email__input:focus + .login__label {
   top: -12px;
   font-size: 0.813rem;
   color: #F7567C;
 }
 
 /* Input focus sticky top label */
-.login__input:not(:placeholder-shown).login__input:not(:focus) + .login__label {
+.login__input:not(:placeholder-shown).login__input:not(:focus) + .login__label, .login_email__input:not(:placeholder-shown).login__input:not(:focus) + .login__label {
   top: -12px;
   font-size: 0.813rem;
   color: #F7567C;
 }
+
 
 /* Remove browser autofill background for inputs */
 .login__input,
@@ -585,6 +599,29 @@ select.login__input option {
   .welcome-features {
     grid-template-columns: 1fr;
   }
+}
+
+/* Adjustments for Registration Page Inputs */
+.register-container .login__box-input {
+  width: 100%; /* Ensure the input container takes full width */
+}
+
+.register-container .login__input {
+  padding-block: 1rem; /* Increased padding for height */
+  padding-right: 3rem; /* Added padding for the show password toggle */
+}
+
+.register-container .login__label {
+  top: 15px; /* Adjusted initial top position */
+  /* ...existing transition and color... */
+}
+
+/* Ensure the label adjusts correctly on focus/fill for registration inputs */
+.register-container .login__input:focus + .login__label,
+.register-container .login__input:not(:placeholder-shown).login__input:not(:focus) + .login__label {
+  top: -12px; /* Keep the existing top value */
+  font-size: 0.813rem; /* Keep the existing font size */
+  color: #F7567C; /* Keep the existing color */
 }
 
 .pw-valid { color: #28a745 !important; }

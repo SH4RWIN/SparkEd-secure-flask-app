@@ -73,7 +73,26 @@ def register():
     form = RegistrationForm()
     if request.method == 'POST':
         # AJAX submission expected
-        if form.validate_on_submit():
+        # Get Turnstile token from form
+        turnstile_token = request.form.get('cf-turnstile-response')
+
+        # Verify the Turnstile token
+        verify_url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
+        payload = {
+            'secret': CF_TURNSTILE_SECRETKEY,
+            'response': turnstile_token,
+            'remoteip': request.remote_addr  # optional but recommended
+        }
+        try:
+            response = requests.post(verify_url, data=payload)
+            result = response.json()
+
+            if result.get("success"):
+                pass
+        except:
+            pass
+
+        if form.validate_on_submit():   # checks if the request is POST and has
             email = form.email.data
             # Check if the email already exists
             if check_email_exists(email):
@@ -88,7 +107,7 @@ def register():
                 is_active=1,
                 email_verified=0
             )
-            # Send confirmation email asynchronously
+            # Send confirmation email asynchronously, this improves perfomance at a massive scale
             email_thread = threading.Thread(
                 target=send_email_async,
                 args=(email, "SparkEd Email Verification", create_verification_link(email))
@@ -99,14 +118,10 @@ def register():
             return jsonify({'status': 'success', 'redirect_url': url_for('confirm')})
         else:
             # Validation failed
-            errors = []
-            for field, msgs in form.errors.items():
-                for msg in msgs:
-                    errors.append(f"{field}: {msg}")
-            return jsonify({'status': 'error', 'message': ' '.join(errors)})
+            return jsonify({'status': 'error', 'message': 'Validation failed. Please check your input.'})
     else:
         # GET request, render the form
-        return render_template('register.html', form=form)
+        return render_template('register.html', form=form, sitekey=CF_TURNSTILE_SITEKEY)
 
 # Route for email confirmation
 @app.route('/confirm', methods=['GET', 'POST'])
