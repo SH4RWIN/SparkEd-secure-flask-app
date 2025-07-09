@@ -73,10 +73,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Get email and password from specific input IDs
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-pass').value;
+                // const tunrstileResponse = document.getElementById('turnstile-id').value;    // TURNSTILE
 
             // Append email and password to formData
             formData.set('email', email);
             formData.set('password', password);
+            // formData.set('cf-turnstile-response', tunrstileResponse)
 
             // Add CSRF token if present
             const csrfToken = getCsrfToken();
@@ -88,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
             try {
-                const response = await fetch('/login', {
+                const response = await fetch('/test_submit', {    //change this!!!!
                     method: 'POST',
                     body: formData
                 });
@@ -108,4 +110,5 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
 });

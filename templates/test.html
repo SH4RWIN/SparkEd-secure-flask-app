@@ -3,73 +3,48 @@
 {% block head %}
 <title>SparkEd - Register</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
 {% endblock %}
 
 {% block body %}
-<div class="login register-bg">
-   <form id="registerForm" class="container register-container" autocomplete="off">
-      <h1 class="login__title">Register</h1>
+<div class="login">
+   <form id="loginform" autocomplete="off" method="POST" class="container">
+      {{ form.hidden_tag() }}
+      <h1 class="login__title">Login</h1>
       <div class="login__content">
          <div class="login__box">
+            <i class="ri-user-3-line login__icon"></i>
             <div class="login__box-input">
-               <input type="text" required class="login__input" id="reg-name" name="name" placeholder=" ">
-               <label for="reg-name" class="login__label">Full Name</label>
+               <input type="email" required class="login__input" id="login-email" placeholder=" ">
+               <label for="login-email" class="login__label">Email</label>
             </div>
          </div>
          <div class="login__box">
+            <i class="ri-lock-2-line login__icon"></i>
             <div class="login__box-input">
-               <input type="email" required class="login__input" id="reg-email" name="email" placeholder=" ">
-               <label for="reg-email" class="login__label">Email</label>
+               <input type="password" required class="login__input" id="login-pass" placeholder=" ">
+               <label for="login-pass" class="login__label">Password</label>
+               <i class="ri-eye-off-line login__eye" id="login-eye"></i>
             </div>
-         </div>
-         <div class="login__box">
-            <div class="login__box-input">
-               <input type="tel" required class="login__input" id="reg-phone" name="phone" placeholder=" ">
-               <label for="reg-phone" class="login__label">Phone</label>
-            </div>
-         </div>
-         <div class="login__box">
-            <div class="login__box-input" style="position: relative;">
-               <input type="password" required class="login__input" id="reg-password" name="password" placeholder=" ">
-               <label for="reg-password" class="login__label">Password</label>
-               <!-- Show password toggle -->
-               <label class="show-password-toggle">
-                 <input type="checkbox" id="show-password" style="accent-color: #F7567C; margin-right: 2px;"> Show
-               </label>
-            </div>
-         </div>
-
-         <!-- Password Strength Meter and Checklist -->
-         <div id="password-strength-section" style="margin-bottom: 1rem;">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <span>Password Strength:</span>
-              <span id="password-strength-text" style="font-weight: 600; color: #F7567C;">Very Weak</span>
-            </div>
-            <div style="height: 6px; background: #eee; border-radius: 3px; margin: 0.5rem 0;">
-              <div id="password-strength-bar" style="height: 100%; width: 10%; background: #F7567C; border-radius: 3px; transition: width 0.3s, background 0.3s;"></div>
-            </div>
-            <ul id="password-requirements" style="list-style: none; padding-left: 0; margin: 0.5rem 0 0 0;">
-              <li id="pw-lower-upper" style="color: #F7567C;">&#x1F4C4; 1 lowercase & 1 uppercase</li>
-              <li id="pw-number" style="color: #F7567C;">&#x1F4C4; 1 number (0-9)</li>
-              <li id="pw-special" style="color: #F7567C;">&#x1F4C4; 1 special character (!@#$%^&*)</li>
-              <li id="pw-length" style="color: #F7567C;">&#x1F4C4; At least 8 characters</li>
-            </ul>
-
-
-         <div class="login__box">
-            <div class="login__box-input">
-               <input type="password" required class="login__input" id="reg-confirm" name="confirm" placeholder=" ">
-               <label for="reg-confirm" class="login__label">Confirm Password</label>
-            </div>
-            <div id="pw-match-error" style="color:#F7567C; font-size:0.95em; margin-top:0.25rem;"></div>
          </div>
       </div>
-      <button type="submit" class="login__button">Register</button>
+      <div class="turnstilebox">
+         <!-- The following line controls and configures the Turnstile widget. -->
+         <div class="cf-turnstile" id="turnstile-id" data-callback="javascriptCallback" data-sitekey="{{ sitekey }}" data-theme="light"></div>
+         <!-- end. -->
+      </div>
+      <div class="login__check">
+         <div class="login__check-group">
+            <!-- just preserving this for a keeping a small flexbox layout -->
+         </div>
+         <a href="#" class="login__forgot">Forgot Password?</a>
+      </div>
+      <button type="submit" class="login__button">Login</button>
       <p class="login__register">
-         Already have an account? <a href="/login">Login</a>
+         Don't have an account? <a href="/register">Register</a>
       </p>
-      <div id="reg-error" style="color:red;margin-top:10px;"></div>
    </form>
 </div>
-<script src="{{ url_for('static', filename='js/registration.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
 {% endblock %}

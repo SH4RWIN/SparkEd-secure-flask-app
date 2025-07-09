@@ -5,9 +5,9 @@ from wtforms.validators import DataRequired, Email, EqualTo
 from dotenv import load_dotenv
 import os
 import logging
+import requests
 from dbm import check_email_exists, create_user, activate_user_email, check_user_credentials, get_user_by_email
 from werkzeug.security import generate_password_hash
-
 from smtp import send_confirm_email
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 import threading
@@ -30,8 +30,12 @@ app = Flask(__name__)
 secret_key = os.getenv('SECRET_KEY')
 host = os.getenv('HOST', 'localhost')
 app.secret_key = secret_key
-# Set registration form validators
 
+#TURNSTILE KEYS
+CF_TURNSTILE_SITEKEY = os.getenv('CF_TURNSTILE_SITEKEY')
+CF_TURNSTILE_SECRETKEY = os.getenv('CF_TURNSTILE_SECRETKEY')
+
+# Set registration form validators
 class RegistrationForm(FlaskForm):
     full_name = StringField('Full Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -170,6 +174,41 @@ def dashboard():
         return redirect(url_for('login'))
 
     return render_template('dashboard.html', user=user)
+
+@app.route('/test_submit', methods=['POST', 'GET'])
+def test_submit():
+    form = LoginForm()
+    if request.method == 'POST':
+        # Get Turnstile token from form
+        turnstile_token = request.form.get('cf-turnstile-response') 
+
+        # Verify the Turnstile token
+        verify_url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
+        payload = {
+            'secret': CF_TURNSTILE_SECRETKEY,
+            'response': turnstile_token,
+            'remoteip': request.remote_addr  # optional but recommended
+        }
+
+        try:
+            response = requests.post(verify_url, data=payload)
+            result = response.json()
+            print(result)   # remove!!!
+
+            if result.get("success"):
+                # Token is valid, proceed with your test logic here
+                # For now, just return a success message
+                print("TEST PASSED!!!") # REMOVE !!!!
+                return 'Turnstile verification successful', 200
+            else:
+                # Token is invalid
+                return 'Turnstile verification failed', 400
+        except Exception as e:
+            # Handle potential errors during the API call
+            return f'Error verifying Turnstile token: {str(e)}', 500
+    
+    if request.method == 'GET':
+        return render_template('test.html', sitekey=CF_TURNSTILE_SITEKEY, form=form)
 
 if __name__=="__main__":
     app.run(debug=True)
