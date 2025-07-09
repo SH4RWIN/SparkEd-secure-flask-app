@@ -59,6 +59,17 @@ The project is organized as follows:
 
 The application follows a standard Flask web architecture. `app.py` handles routing and request processing. It interacts with `dbm.py` to perform database operations using SQLAlchemy, connecting to a PostgreSQL database. User authentication involves password hashing (using Werkzeug) and session management. Email verification is handled asynchronously via `smtp.py` and uses `itsdangerous` for secure token generation. Cloudflare Turnstile is integrated into the registration and login forms for bot protection. The frontend is built using HTML templates rendered by Jinja2, styled with CSS, and enhanced with JavaScript. Docker Compose (in the first setup method) orchestrates the database and the Flask application.
 
+## 🔒 Security Measures
+
+This application incorporates several security measures to protect against common web vulnerabilities:
+
+*   **Cross-Site Scripting (XSS) Prevention:** Flask's templating engine, Jinja2, automatically escapes output by default. This prevents malicious scripts from being injected into rendered HTML pages.
+*   **Cross-Site Request Forgery (CSRF) Protection:** Integration with Flask-WTF provides robust CSRF protection for all forms. This ensures that form submissions originate from trusted sources.
+*   **SQL Injection Prevention:** By using SQLAlchemy, an Object-Relational Mapper (ORM), database queries are constructed in a way that automatically sanitizes input, effectively preventing SQL injection attacks.
+*   **Secure Password Handling:** User passwords are not stored in plain text. Werkzeug's security utilities are used to securely hash passwords before storing them in the database.
+*   **Email Verification:** The email verification process helps confirm the authenticity of user accounts and reduces the risk of spam or malicious registrations.
+*   **Bot Protection:** Cloudflare Turnstile is integrated into registration and login forms to distinguish between human users and bots, mitigating automated attacks.
+
 ## 🚀 Getting Started
 
 You can set up and run this project using two different methods:
