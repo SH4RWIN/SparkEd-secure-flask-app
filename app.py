@@ -177,7 +177,7 @@ def login():
     if request.method == 'GET':
         form = LoginForm()
         return render_template('login.html', form=form, sitekey=CF_TURNSTILE_SITEKEY)
-    
+
     if request.method == 'POST':
         # Get Turnstile token from form
         turnstile_token = request.form.get('cf-turnstile-response')
@@ -203,8 +203,14 @@ def login():
 
                 user_match = check_user_credentials(email, password)
                 if user_match:
-                    session['user_email'] = user_match.email  # Store user email in session
-                    return jsonify({'status': 'success', 'redirect_url': url_for('dashboard')})
+                    # Check if email is verified
+                    if user_match.email_verified == 1:
+                        session['user_email'] = user_match.email  # Store user email in session
+                        return jsonify({'status': 'success', 'redirect_url': url_for('dashboard')})
+                    else:
+                        # Email not verified
+                        session['pending_verification_email'] = user_match.email # Store email for confirmation page
+                        return jsonify({'status': 'error', 'message': 'Please verify your email address before logging in.', 'redirect_url': url_for('confirm')}), 401
                 else:
                     return jsonify({'status': 'error', 'message': 'Invalid email or password.'}), 401
             else:

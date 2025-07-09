@@ -19,6 +19,8 @@ services:                     # Defines the services (containers) to run.
       - "5000:5000"           # Expose the Flask app on port 5000 on the host machine.
     env_file:                 # Load environment variables from the .env file.
       - .env
+    environment:
+      - DB_HOST=db
     networks:                 # Connects the Flask app service to the 'flask-app' network.
       - flask-app
     depends_on:               # Ensure the database service starts before the Flask app.

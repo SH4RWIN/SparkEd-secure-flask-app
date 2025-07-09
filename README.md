@@ -203,6 +203,8 @@ This method runs the Flask application directly on your host machine while using
     ```bash
     gunicorn --bind 0.0.0.0:5000 app:app
     ```
+    *Note: Gunicorn is primarily for UNIX-like systems. If you are on Windows, you might need to use Flask's built-in development server instead.*
+
     Or for development with Flask's built-in server:
 
     ```bash

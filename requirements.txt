@@ -4,9 +4,9 @@ python-dotenv
 requests
 SQLAlchemy
 dotenv
-logging
 werkzeug
 datetime
 gunicorn
 psycopg2
 flask_mail
+email-validator>=1.0.0
