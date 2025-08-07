@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
 
 import os
-from database_init import UserDetails  # Import the UserDetails Schema
+from setup import UserDetails  # Import the UserDetails Schema
 from datetime import datetime, timedelta
 
 load_dotenv()

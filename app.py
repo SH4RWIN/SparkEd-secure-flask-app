@@ -70,7 +70,7 @@ def create_verification_link(email):
     # create a verification link with this token
     protocol = "https" if os.getenv("FLASK_ENV") == "production" else "http"
     token = serializer.dumps(email, salt='email-verification')
-    craft_url = f"{protocol}://{host}:5000/confirm?token={token}"
+    craft_url = f"{protocol}://{host}/confirm?token={token}"
     return craft_url
 
 @app.route('/', methods=['GET'])
@@ -106,8 +106,8 @@ def register():
 
             if result.get("success"):
                 pass
-        except:
-            pass
+        except Exception as e:
+            print("Error Occured. error: " + e)
 
         if form.validate_on_submit():   # checks if the request is POST and has
             email = form.email.data
@@ -247,10 +247,14 @@ def logout():
 @app.after_request
 def add_no_cache_headers(response):
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['X-Content-Type-Options'] = 'nosniff'  
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "0"
     return response
 
+
 if __name__=="__main__":
-    app.run()
+    app.run(ssl_context=('certs/cert.pem', 'certs/key.pem'))
 

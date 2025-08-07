@@ -4,14 +4,17 @@ services:                     # Defines the services (containers) to run.
   db:                         # Name of the service (here, a database).
     image: postgres:latest    # Use the latest official Postgres image from Docker Hub.
     environment:              # Set environment variables for the container:
-      POSTGRES_USER: user         # - Database username
-      POSTGRES_PASSWORD: password # - Database password
-      POSTGRES_DB: mydatabase     # - Database name
+      POSTGRES_USER: spark         # - Database username
+      POSTGRES_PASSWORD: supersecretpassword # - Database password
+      POSTGRES_DB: mydatabase    # - Database name
     restart: unless-stopped     # Restart the container unless it is explicitly stopped.
+    ports:                    # Maps container ports to host ports:
+      - "5432:5432"           # Expose Postgres on port 5432 on the host machine.
     volumes:                  # Mounts a volume for persistent data:
       - pg_data:/var/lib/postgresql/data # Maps the named volume 'pg_data' to the Postgres data directory in the container.
     networks:                 # Connects the database service to the 'flask-app' network.
-      - flask-app
+      flask-app:              # Specify the network name
+        ipv4_address: 172.20.0.2 # Assign a static IP address from the subnet
 
   flask_app:                # Name of the service for the Flask application.
     build: .                  # Build the Docker image using the Dockerfile in the current directory.
@@ -20,11 +23,24 @@ services:                     # Defines the services (containers) to run.
     env_file:                 # Load environment variables from the .env file.
       - .env
     environment:
-      - DB_HOST=db
+      - DB_HOST=db          # Set the database host to the service name 'db'.
     networks:                 # Connects the Flask app service to the 'flask-app' network.
-      - flask-app
+      flask-app:              # Specify the network name
+        ipv4_address: 172.20.0.3 # Assign a static IP address from the subnet
     depends_on:               # Ensure the database service starts before the Flask app.
       - db
+
+  cloudflared:              # New service for Cloudflare Tunnel
+    image: cloudflare/cloudflared:latest # Use the official cloudflared image
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TOKEN} # Command to run the tunnel with token from .env
+    env_file:                 # Load environment variables from the .env file (for the token)
+      - .env
+    restart: unless-stopped     # Restart the container unless explicitly stopped
+    networks:                 # Connect to the same network as the Flask app
+      flask-app:              # Specify the network name
+        ipv4_address: 172.20.0.4 # Assign a static IP address from the subnet
+    depends_on:               # Ensure the Flask app is running before starting the tunnel
+      - flask_app
 
 volumes:                      # Defines named volumes for persistent storage.
   pg_data:                    # Name of the volume for database data.
@@ -32,3 +48,6 @@ volumes:                      # Defines named volumes for persistent storage.
 networks:                     # Defines the networks to be used by the services.
   flask-app:                  # Name of the network.
     driver: bridge            # Use the default bridge network driver.
+    ipam:                     # IP Address Management configuration
+      config:
+        - subnet: "172.20.0.0/24" # Define the subnet for the network

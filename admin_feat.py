@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker,declarative_base
 from sqlalchemy.exc import IntegrityError
 from dotenv import load_dotenv
 import os
-from database_init import UserDetails  # Import the UserDetails Schema
+from setup import UserDetails  # Import the UserDetails Schema
 from datetime import datetime, timedelta
 
 load_dotenv()
@@ -61,6 +61,5 @@ def clear_user_table():
 # drop_database()
 list_all_users()
 # clear_user_table()
-
 
 
