@@ -19,7 +19,7 @@ RUN apt-get update && apt-get upgrade -y && \
 
 # Copy the necessary application files and directories into the container
 COPY app.py ./
-COPY database_init.py ./
+COPY setup.py ./
 COPY dbm.py ./
 COPY smtp.py ./
 COPY templates/ templates/
@@ -28,6 +28,6 @@ COPY static/ static/
 # Expose the port the application will run on
 EXPOSE 5000
 
-# Command to run the application using gunicorn
-# "app:app" refers to the 'app' Flask instance within the 'app.py' file
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+# Use a platform-independent Python entrypoint
+COPY entrypoint.py ./entrypoint.py
+ENTRYPOINT ["python", "./entrypoint.py"]

@@ -1,5 +1,4 @@
 version: '3.8'                # Specifies the version of the Docker Compose file format.
-
 services:                     # Defines the services (containers) to run.
   db:                         # Name of the service (here, a database).
     image: postgres:latest    # Use the latest official Postgres image from Docker Hub.
@@ -29,18 +28,6 @@ services:                     # Defines the services (containers) to run.
         ipv4_address: 172.20.0.3 # Assign a static IP address from the subnet
     depends_on:               # Ensure the database service starts before the Flask app.
       - db
-
-  cloudflared:              # New service for Cloudflare Tunnel
-    image: cloudflare/cloudflared:latest # Use the official cloudflared image
-    command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TOKEN} # Command to run the tunnel with token from .env
-    env_file:                 # Load environment variables from the .env file (for the token)
-      - .env
-    restart: unless-stopped     # Restart the container unless explicitly stopped
-    networks:                 # Connect to the same network as the Flask app
-      flask-app:              # Specify the network name
-        ipv4_address: 172.20.0.4 # Assign a static IP address from the subnet
-    depends_on:               # Ensure the Flask app is running before starting the tunnel
-      - flask_app
 
 volumes:                      # Defines named volumes for persistent storage.
   pg_data:                    # Name of the volume for database data.
